@@ -11,7 +11,9 @@ qrcode>=8.0,<9.0
 pillow>=11.0,<12.0
 
 # Document conversion
-markitdown[all]>=0.1,<0.2
+# Only the extras the MD tool actually uses (drops heavy audio/Azure extras
+# from [all] to fit Streamlit Community Cloud's 1 GB free tier).
+markitdown[docx,pptx,xlsx,xls,pdf,youtube-transcription]>=0.1,<0.2
 PyPDF2==3.0.1
 
 # Text-to-speech (PDF -> MP3)
