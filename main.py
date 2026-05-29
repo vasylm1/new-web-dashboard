@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import importlib.util
 from translations import translations
+from views import about, privacy
 
 # 🛠 Page configuration
 st.set_page_config(page_title="My Tools Hub", page_icon="🛠️", layout="wide")
@@ -31,43 +32,42 @@ html, body, [class*="css"] {
 </style>
 """, unsafe_allow_html=True)
 
-# 🌍 Language selector
+# 🌍 Language selector — shared across every page
 languages = list(translations.keys())
 lang = st.sidebar.selectbox("🌍 Language", languages, index=0)
 t = translations[lang]
 
-# 📁 Discover tools in the services directory
-services_dir = os.path.join(os.path.dirname(__file__), "services")
-os.makedirs(services_dir, exist_ok=True)
 
-tool_files = sorted(f for f in os.listdir(services_dir) if f.endswith(".py"))
-# Show friendly names (e.g. "File converter") instead of raw "File converter.py".
-display_to_file = {f[:-3]: f for f in tool_files}
+def tools_page():
+    """Main hub: pick a tool and run it."""
+    st.title("🛠️ My Tools Hub")
 
-selected_display = st.sidebar.selectbox("🧰 " + t["selectTool"], list(display_to_file.keys()))
+    services_dir = os.path.join(os.path.dirname(__file__), "services")
+    os.makedirs(services_dir, exist_ok=True)
 
-# 🔍 About section
-with st.sidebar.expander(t["aboutTab"], expanded=False):
-    st.subheader(t["aboutTitle"])
-    for i in range(1, 5):
-        st.markdown(f"<p>{t[f'aboutText{i}']}</p>", unsafe_allow_html=True)
-    st.markdown(f"""
-    <a class="social-link" href="https://www.linkedin.com/in/vasyl-madei-399488247/" target="_blank">
-      🔗 {t["linkedinText"]}
-    </a>
-    """, unsafe_allow_html=True)
+    tool_files = sorted(f for f in os.listdir(services_dir) if f.endswith(".py"))
+    # Show friendly names (e.g. "File converter") instead of raw "File converter.py".
+    display_to_file = {f[:-3]: f for f in tool_files}
 
-# 🔒 Privacy notice (GDPR)
-with st.sidebar.expander("🔒 " + t["privacy_title"], expanded=False):
-    st.caption(t["privacy_text"])
+    if not display_to_file:
+        st.info("No tools are available yet.")
+        return
 
-# 🔧 Load and run the selected tool
-st.title("🛠️ My Tools Hub")
+    selected_display = st.sidebar.selectbox("🧰 " + t["selectTool"], list(display_to_file.keys()))
 
-selected = display_to_file[selected_display]
-file_path = os.path.join(services_dir, selected)
-spec = importlib.util.spec_from_file_location("tool_module", file_path)
-tool_module = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(tool_module)
-if hasattr(tool_module, "run"):
-    tool_module.run(lang)
+    selected = display_to_file[selected_display]
+    file_path = os.path.join(services_dir, selected)
+    spec = importlib.util.spec_from_file_location("tool_module", file_path)
+    tool_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(tool_module)
+    if hasattr(tool_module, "run"):
+        tool_module.run(lang)
+
+
+# 🧭 Multipage navigation
+pages = [
+    st.Page(tools_page, title=t["nav_tools"], icon="🧰", default=True),
+    st.Page(lambda: about.render(t), title=t["nav_about"], icon="👤", url_path="about"),
+    st.Page(lambda: privacy.render(t), title=t["nav_privacy"], icon="🔒", url_path="privacy"),
+]
+st.navigation(pages).run()
