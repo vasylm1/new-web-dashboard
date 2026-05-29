@@ -616,6 +616,7 @@ _ADDITIONAL = {
         "imgresize_saved": "Size reduced by",
         "imgresize_download": "Download image",
         "imgresize_error": "Could not open the image:",
+        "sig_design": "Design",
     },
     "Polski": {
         "fileconv_mismatch": "Przesłany plik nie pasuje do wybranej konwersji.",
@@ -651,6 +652,7 @@ _ADDITIONAL = {
         "imgresize_saved": "Rozmiar zmniejszony o",
         "imgresize_download": "Pobierz obraz",
         "imgresize_error": "Nie udało się otworzyć obrazu:",
+        "sig_design": "Wzór",
     },
     "Deutsch": {
         "fileconv_mismatch": "Die hochgeladene Datei passt nicht zur ausgewählten Konvertierung.",
@@ -686,6 +688,7 @@ _ADDITIONAL = {
         "imgresize_saved": "Größe reduziert um",
         "imgresize_download": "Bild herunterladen",
         "imgresize_error": "Bild konnte nicht geöffnet werden:",
+        "sig_design": "Design",
     },
     "Українська": {
         "fileconv_mismatch": "Завантажений файл не відповідає обраному типу конвертації.",
@@ -721,6 +724,7 @@ _ADDITIONAL = {
         "imgresize_saved": "Розмір зменшено на",
         "imgresize_download": "Завантажити зображення",
         "imgresize_error": "Не вдалося відкрити зображення:",
+        "sig_design": "Дизайн",
     },
     "中文": {
         "fileconv_mismatch": "上传的文件与所选转换类型不匹配。",
@@ -756,6 +760,7 @@ _ADDITIONAL = {
         "imgresize_saved": "体积减少了",
         "imgresize_download": "下载图片",
         "imgresize_error": "无法打开图片：",
+        "sig_design": "样式",
     },
 }
 for _lang, _extra in _ADDITIONAL.items():

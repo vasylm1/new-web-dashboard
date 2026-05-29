@@ -52,18 +52,22 @@ def _photo_data_uri(uploaded_file):
     return f"data:{mime};base64,{b64}"
 
 
-def build_signature(data):
-    """Build an email-client-friendly, table-based HTML signature with inline styles."""
-    e = lambda v: html.escape(str(v), quote=True)
-    font = data["font_family"]
-    base = data["font_size"]
-    heading = round(base * data["heading_scale"] / 100)
-    primary = data["primary_color"]
-    text_color = data["text_color"]
-    bg = data["bg_color"]
-    muted = "#6b7280"
+TABLE = 'cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"'
 
-    # Contact rows
+
+def _photo_tag(uri, size, radius="50%"):
+    if not uri:
+        return ""
+    return (f'<img src="{uri}" width="{size}" height="{size}" '
+            f'style="border-radius:{radius};display:block;object-fit:cover;" alt="">')
+
+
+def _parts(data):
+    """Pre-build the shared, escaped HTML fragments every template reuses."""
+    e = lambda v: html.escape(str(v), quote=True)
+    base = data["font_size"]
+    primary = data["primary_color"]
+
     contact_bits = []
     if data["phone"]:
         contact_bits.append(f'📞 {e(data["phone"])}')
@@ -71,50 +75,156 @@ def build_signature(data):
         contact_bits.append(
             f'✉️ <a href="mailto:{e(data["email"])}" style="color:{primary};text-decoration:none;">{e(data["email"])}</a>'
         )
-    contact_line = "&nbsp;&nbsp;|&nbsp;&nbsp;".join(contact_bits)
 
-    # Social links
     style = data["link_style"]
     links = []
     for label, emoji, url in data["socials"]:
         if not url:
             continue
-        if style == "icon":
-            inner = emoji
-        elif style == "text":
-            inner = e(label)
-        else:  # both
-            inner = f"{emoji} {e(label)}"
+        inner = emoji if style == "icon" else (e(label) if style == "text" else f"{emoji} {e(label)}")
         links.append(
             f'<a href="{e(url)}" style="color:{primary};text-decoration:none;font-weight:600;">{inner}</a>'
         )
-    social_line = "&nbsp;&nbsp;·&nbsp;&nbsp;".join(links)
 
-    photo_cell = ""
-    if data["photo_uri"]:
-        photo_cell = (
-            f'<td style="padding-right:16px;vertical-align:top;">'
-            f'<img src="{data["photo_uri"]}" width="84" height="84" '
-            f'style="border-radius:50%;display:block;object-fit:cover;" alt=""></td>'
-        )
+    role_company = " · ".join(filter(None, [
+        e(data["job_title"]) if data["job_title"] else "",
+        e(data["company"]) if data["company"] else "",
+    ]))
+    greeting = e(data["greeting"]) if data["greeting"] else ""
+    greeting_html = (f'<div style="font-size:{base}px;color:#6b7280;padding-bottom:10px;">{greeting}</div>'
+                     if greeting else "")
 
-    greeting_html = ""
-    if data["greeting"]:
-        greeting_html = (
-            f'<div style="font-size:{base}px;color:{muted};padding-bottom:10px;">{e(data["greeting"])}</div>'
-        )
+    return {
+        "font": data["font_family"], "base": base,
+        "heading": round(base * data["heading_scale"] / 100),
+        "primary": primary, "text": data["text_color"], "bg": data["bg_color"], "muted": "#6b7280",
+        "name": e(data["full_name"]) or "&nbsp;",
+        "role_company": role_company,
+        "contact_inline": "&nbsp;&nbsp;|&nbsp;&nbsp;".join(contact_bits),
+        "contact_stacked": "<br>".join(contact_bits),
+        "social_line": "&nbsp;&nbsp;·&nbsp;&nbsp;".join(links),
+        "greeting_html": greeting_html,
+        "photo_uri": data["photo_uri"],
+    }
 
-    role_company = " · ".join(filter(None, [e(data["job_title"]) if data["job_title"] else "",
-                                            e(data["company"]) if data["company"] else ""]))
 
-    return f"""<div style="font-family:{font};background:{bg};padding:16px;display:inline-block;">
-{greeting_html}<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
-<tr>{photo_cell}<td style="vertical-align:top;border-left:3px solid {primary};padding-left:16px;">
-<div style="font-size:{heading}px;font-weight:700;color:{text_color};">{e(data["full_name"]) or "&nbsp;"}</div>
-<div style="font-size:{base}px;color:{muted};padding-top:2px;">{role_company}</div>
-<div style="font-size:{base}px;color:{text_color};padding-top:8px;">{contact_line}</div>
-<div style="font-size:{base}px;padding-top:8px;">{social_line}</div>
-</td></tr></table></div>"""
+def _wrap(p, inner, align="left"):
+    return (f'<div style="font-family:{p["font"]};background:{p["bg"]};padding:16px;'
+            f'display:inline-block;text-align:{align};">{p["greeting_html"]}{inner}</div>')
+
+
+def _t1(p):  # Accent bar
+    cell = f'<td style="padding-right:16px;vertical-align:top;">{_photo_tag(p["photo_uri"], 84)}</td>' if p["photo_uri"] else ""
+    return _wrap(p, f'<table {TABLE}><tr>{cell}'
+        f'<td style="vertical-align:top;border-left:3px solid {p["primary"]};padding-left:16px;">'
+        f'<div style="font-size:{p["heading"]}px;font-weight:700;color:{p["text"]};">{p["name"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["muted"]};padding-top:2px;">{p["role_company"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};padding-top:8px;">{p["contact_inline"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:8px;">{p["social_line"]}</div>'
+        f'</td></tr></table>')
+
+
+def _t2(p):  # Top banner
+    cell = f'<td style="padding-right:12px;vertical-align:middle;">{_photo_tag(p["photo_uri"], 56)}</td>' if p["photo_uri"] else ""
+    header = (f'<table {TABLE}><tr>{cell}<td style="vertical-align:middle;">'
+        f'<div style="font-size:{p["heading"]}px;font-weight:700;color:#ffffff;">{p["name"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:rgba(255,255,255,0.85);">{p["role_company"]}</div>'
+        f'</td></tr></table>')
+    return _wrap(p, f'<div style="background:{p["primary"]};padding:14px 16px;border-radius:8px 8px 0 0;">{header}</div>'
+        f'<div style="padding:12px 16px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px;">'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};">{p["contact_inline"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:8px;">{p["social_line"]}</div></div>')
+
+
+def _t3(p):  # Minimal
+    return _wrap(p, f'<div style="border-top:2px solid {p["primary"]};padding-top:10px;">'
+        f'<div style="font-size:{p["heading"]}px;font-weight:700;color:{p["text"]};">{p["name"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["muted"]};padding-top:2px;">{p["role_company"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};padding-top:6px;">{p["contact_inline"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:6px;">{p["social_line"]}</div></div>')
+
+
+def _t4(p):  # Card
+    cell = f'<td style="padding-right:14px;vertical-align:top;">{_photo_tag(p["photo_uri"], 72)}</td>' if p["photo_uri"] else ""
+    return _wrap(p, f'<div style="border:1px solid {p["primary"]};background:#f8fafc;border-radius:10px;padding:14px 16px;">'
+        f'<table {TABLE}><tr>{cell}<td style="vertical-align:top;">'
+        f'<div style="font-size:{p["heading"]}px;font-weight:700;color:{p["text"]};">{p["name"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["muted"]};padding-top:2px;">{p["role_company"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};padding-top:8px;">{p["contact_inline"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:8px;">{p["social_line"]}</div>'
+        f'</td></tr></table></div>')
+
+
+def _t5(p):  # Centered
+    photo = f'<div style="padding-bottom:10px;">{_photo_tag(p["photo_uri"], 96)}</div>' if p["photo_uri"] else ""
+    return _wrap(p, f'{photo}'
+        f'<div style="font-size:{p["heading"]}px;font-weight:700;color:{p["text"]};">{p["name"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["muted"]};padding-top:2px;">{p["role_company"]}</div>'
+        f'<div style="width:40px;height:3px;background:{p["primary"]};margin:10px auto;"></div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};">{p["contact_inline"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:8px;">{p["social_line"]}</div>', align="center")
+
+
+def _t6(p):  # Two columns + divider
+    photo = f'<div style="padding-bottom:8px;">{_photo_tag(p["photo_uri"], 72)}</div>' if p["photo_uri"] else ""
+    left = (f'<td style="vertical-align:top;padding-right:18px;">{photo}'
+        f'<div style="font-size:{p["heading"]}px;font-weight:700;color:{p["text"]};">{p["name"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["muted"]};padding-top:2px;">{p["role_company"]}</div></td>')
+    right = (f'<td style="vertical-align:top;border-left:2px solid {p["primary"]};padding-left:18px;">'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};line-height:1.6;">{p["contact_stacked"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:8px;">{p["social_line"]}</div></td>')
+    return _wrap(p, f'<table {TABLE}><tr>{left}{right}</tr></table>')
+
+
+def _t7(p):  # Bold name + underline
+    return _wrap(p, f'<div style="font-size:{p["heading"] + 4}px;font-weight:800;color:{p["primary"]};">{p["name"]}</div>'
+        f'<div style="border-bottom:2px solid {p["primary"]};width:120px;margin:4px 0 8px;"></div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["muted"]};">{p["role_company"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};padding-top:8px;">{p["contact_inline"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:8px;">{p["social_line"]}</div>')
+
+
+def _t8(p):  # Compact
+    cell = f'<td style="padding-right:12px;vertical-align:top;">{_photo_tag(p["photo_uri"], 56)}</td>' if p["photo_uri"] else ""
+    return _wrap(p, f'<table {TABLE}><tr>{cell}<td style="vertical-align:top;">'
+        f'<div style="font-size:{p["base"] + 2}px;font-weight:700;color:{p["text"]};">{p["name"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["muted"]};">{p["role_company"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};padding-top:4px;line-height:1.5;">{p["contact_stacked"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:4px;">{p["social_line"]}</div>'
+        f'</td></tr></table>')
+
+
+def _t9(p):  # Role pill
+    pill = (f'<span style="display:inline-block;background:{p["primary"]};color:#fff;'
+        f'font-size:{p["base"]}px;padding:2px 10px;border-radius:12px;">{p["role_company"]}</span>'
+        if p["role_company"] else "")
+    cell = f'<td style="padding-right:16px;vertical-align:top;">{_photo_tag(p["photo_uri"], 80)}</td>' if p["photo_uri"] else ""
+    return _wrap(p, f'<table {TABLE}><tr>{cell}<td style="vertical-align:top;">'
+        f'<div style="font-size:{p["heading"]}px;font-weight:700;color:{p["text"]};padding-bottom:6px;">{p["name"]}</div>'
+        f'<div>{pill}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};padding-top:8px;">{p["contact_inline"]}</div>'
+        f'<div style="font-size:{p["base"]}px;padding-top:8px;">{p["social_line"]}</div>'
+        f'</td></tr></table>')
+
+
+def _t10(p):  # Modern rules
+    cell = f'<td style="padding-right:14px;vertical-align:middle;">{_photo_tag(p["photo_uri"], 64)}</td>' if p["photo_uri"] else ""
+    top = (f'<table {TABLE}><tr>{cell}<td style="vertical-align:middle;">'
+        f'<div style="font-size:{p["heading"]}px;font-weight:700;color:{p["text"]};">{p["name"]}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["muted"]};">{p["role_company"]}</div></td></tr></table>')
+    return _wrap(p, f'<div style="border-top:2px solid {p["primary"]};border-bottom:2px solid {p["primary"]};padding:12px 0;">{top}</div>'
+        f'<div style="font-size:{p["base"]}px;color:{p["text"]};padding-top:8px;">{p["contact_inline"]}'
+        f'&nbsp;&nbsp;|&nbsp;&nbsp;{p["social_line"]}</div>')
+
+
+TEMPLATES = [_t1, _t2, _t3, _t4, _t5, _t6, _t7, _t8, _t9, _t10]
+
+
+def build_signature(data, design=1):
+    """Render the chosen design (1-10) as an inline-styled HTML signature."""
+    p = _parts(data)
+    idx = max(1, min(len(TEMPLATES), int(design))) - 1
+    return TEMPLATES[idx](p)
 
 
 def run(lang):
@@ -129,6 +239,11 @@ def run(lang):
     left, right = st.columns([1, 1], gap="large")
 
     with left:
+        design = st.selectbox(
+            "🎨 " + t["sig_design"],
+            list(range(1, len(TEMPLATES) + 1)),
+            format_func=lambda n: f"{t['sig_design']} {n}",
+        )
         st.subheader(t["signature_details"])
         full_name = st.text_input(t["full_name"], placeholder=sample["full_name"])
         job_title = st.text_input(t["job_title"], placeholder=sample["job_title"])
@@ -194,11 +309,11 @@ def run(lang):
         "link_style": link_style,
     }
 
-    signature_html = build_signature(data)
+    signature_html = build_signature(data, design)
 
     with right:
         st.subheader(t["preview"])
-        components.html(signature_html, height=240, scrolling=True)
+        components.html(signature_html, height=320, scrolling=True)
 
         st.download_button(
             "⬇️ " + t["download_html"],
