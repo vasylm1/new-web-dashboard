@@ -598,7 +598,7 @@ _ADDITIONAL = {
         "privacy_point_tracking": "**No tracking.** No analytics or advertising cookies are used, and Streamlit's anonymous usage statistics are disabled.",
         "privacy_point_thirdparty": "**Third parties.** Only when you use a specific feature: a YouTube URL is sent to YouTube for its transcript, and PDF→MP3 text is sent to Google Text-to-Speech.",
         "about_languages_title": "Languages",
-        "about_languages": "🇺🇦 Ukrainian — C2  ·  🇷🇺 Russian — C2  ·  🇵🇱 Polish — C1  ·  🇬🇧 English — C1  ·  🇩🇪 German — B2",
+        "about_languages": "🇺🇦 Ukrainian — C2  ·  Russian — C2  ·  🇵🇱 Polish — C1  ·  🇬🇧 English — C1  ·  🇩🇪 German — B2",
     },
     "Polski": {
         "fileconv_mismatch": "Przesłany plik nie pasuje do wybranej konwersji.",
@@ -616,7 +616,7 @@ _ADDITIONAL = {
         "privacy_point_tracking": "**Brak śledzenia.** Nie używamy plików cookie analitycznych ani reklamowych, a anonimowe statystyki użytkowania Streamlit są wyłączone.",
         "privacy_point_thirdparty": "**Strony trzecie.** Tylko gdy korzystasz z danej funkcji: adres URL YouTube jest wysyłany do YouTube po transkrypcję, a tekst PDF→MP3 trafia do Google Text-to-Speech.",
         "about_languages_title": "Języki",
-        "about_languages": "🇺🇦 Ukraiński — C2  ·  🇷🇺 Rosyjski — C2  ·  🇵🇱 Polski — C1  ·  🇬🇧 Angielski — C1  ·  🇩🇪 Niemiecki — B2",
+        "about_languages": "🇺🇦 Ukraiński — C2  ·  Rosyjski — C2  ·  🇵🇱 Polski — C1  ·  🇬🇧 Angielski — C1  ·  🇩🇪 Niemiecki — B2",
     },
     "Deutsch": {
         "fileconv_mismatch": "Die hochgeladene Datei passt nicht zur ausgewählten Konvertierung.",
@@ -634,7 +634,7 @@ _ADDITIONAL = {
         "privacy_point_tracking": "**Kein Tracking.** Es werden keine Analyse- oder Werbe-Cookies verwendet, und die anonyme Nutzungsstatistik von Streamlit ist deaktiviert.",
         "privacy_point_thirdparty": "**Dritte.** Nur wenn Sie eine bestimmte Funktion nutzen: Eine YouTube-URL wird zur Transkription an YouTube gesendet, und der PDF→MP3-Text geht an Google Text-to-Speech.",
         "about_languages_title": "Sprachen",
-        "about_languages": "🇺🇦 Ukrainisch — C2  ·  🇷🇺 Russisch — C2  ·  🇵🇱 Polnisch — C1  ·  🇬🇧 Englisch — C1  ·  🇩🇪 Deutsch — B2",
+        "about_languages": "🇺🇦 Ukrainisch — C2  ·  Russisch — C2  ·  🇵🇱 Polnisch — C1  ·  🇬🇧 Englisch — C1  ·  🇩🇪 Deutsch — B2",
     },
     "Українська": {
         "fileconv_mismatch": "Завантажений файл не відповідає обраному типу конвертації.",
@@ -652,7 +652,7 @@ _ADDITIONAL = {
         "privacy_point_tracking": "**Без відстеження.** Аналітичні чи рекламні файли cookie не використовуються, а анонімну статистику використання Streamlit вимкнено.",
         "privacy_point_thirdparty": "**Треті сторони.** Лише коли ви користуєтеся певною функцією: URL YouTube надсилається до YouTube для отримання транскрипції, а текст PDF→MP3 — до Google Text-to-Speech.",
         "about_languages_title": "Мови",
-        "about_languages": "🇺🇦 Українська — C2  ·  🇷🇺 Російська — C2  ·  🇵🇱 Польська — C1  ·  🇬🇧 Англійська — C1  ·  🇩🇪 Німецька — B2",
+        "about_languages": "🇺🇦 Українська — C2  ·  Російська — C2  ·  🇵🇱 Польська — C1  ·  🇬🇧 Англійська — C1  ·  🇩🇪 Німецька — B2",
     },
     "中文": {
         "fileconv_mismatch": "上传的文件与所选转换类型不匹配。",
@@ -670,7 +670,7 @@ _ADDITIONAL = {
         "privacy_point_tracking": "**无跟踪。** 不使用任何分析或广告 Cookie，且已禁用 Streamlit 的匿名使用统计。",
         "privacy_point_thirdparty": "**第三方。** 仅当你使用特定功能时：YouTube 链接会发送至 YouTube 以获取字幕，PDF→MP3 的文本会发送至 Google 文字转语音。",
         "about_languages_title": "语言",
-        "about_languages": "🇺🇦 乌克兰语 — C2  ·  🇷🇺 俄语 — C2  ·  🇵🇱 波兰语 — C1  ·  🇬🇧 英语 — C1  ·  🇩🇪 德语 — B2",
+        "about_languages": "🇺🇦 乌克兰语 — C2  ·  俄语 — C2  ·  🇵🇱 波兰语 — C1  ·  🇬🇧 英语 — C1  ·  🇩🇪 德语 — B2",
     },
 }
 for _lang, _extra in _ADDITIONAL.items():
