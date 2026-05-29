@@ -16,6 +16,13 @@ in its own module under [`services/`](services/) and is auto-discovered by the a
 | Vcard generator | Build a `.vcf` contact card plus a QR code |
 | Email signature | Build a self-contained HTML email signature (photo, colors, social links) with live preview, copy, and download |
 | Image resizer | Resize & compress images (PNG/JPEG/WEBP) or generate a favicon pack (PNG sizes + `.ico`) |
+| Hashtag extractor | Pull top keywords and suggested/found hashtags from a block of text |
+| Spreadsheet cleaner | Trim, dedupe, drop empty rows/cols, and standardize headers in CSV/Excel |
+| JSON formatter | Format, minify, validate JSON, or convert an array of objects to CSV |
+| Images to PDF | Combine multiple images into a single PDF (A4/Letter/fit, portrait/landscape) |
+| Markdown to HTML | Render Markdown to styled, self-contained HTML with preview and download |
+| Image watermark | Overlay text or a logo watermark on an image (position, opacity, size) |
+| Brand palette | Extract a dominant color palette (HEX) from an image and export as CSS |
 
 ## Run locally
 
