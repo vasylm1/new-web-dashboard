@@ -3,10 +3,10 @@ import os
 import importlib.util
 from translations import translations
 
-# 🛠 Налаштування сторінки
+# 🛠 Page configuration
 st.set_page_config(page_title="🛠️ My Tools Hub", layout="wide")
 
-# 🎨 Вбудовані стилі
+# 🎨 Embedded styles
 st.markdown("""
 <style>
 :root {
@@ -17,21 +17,6 @@ st.markdown("""
 html, body, [class*="css"] {
   font-family: 'Segoe UI', sans-serif;
   background: linear-gradient(135deg, #f5f7fa 0%, #dfe7f5 100%) !important;
-}
-.tool-button {
-  background: linear-gradient(45deg, var(--primary), var(--accent));
-  border: none;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-.tool-button:hover {
-  background: linear-gradient(45deg, var(--secondary), var(--accent));
-  transform: translateY(-2px);
 }
 .social-link {
   display: inline-block;
@@ -45,18 +30,23 @@ html, body, [class*="css"] {
 }
 </style>
 """, unsafe_allow_html=True)
-# English only
-t = translations["English"]
-lang = "English"
-# 📁 Читаємо всі тули
+
+# 🌍 Language selector
+languages = list(translations.keys())
+lang = st.sidebar.selectbox("🌍 Language", languages, index=0)
+t = translations[lang]
+
+# 📁 Discover tools in the services directory
 services_dir = os.path.join(os.path.dirname(__file__), "services")
-if not os.path.exists(services_dir):
-    os.makedirs(services_dir)
+os.makedirs(services_dir, exist_ok=True)
 
-tools = [f for f in os.listdir(services_dir) if f.endswith(".py")]
-selected = st.sidebar.selectbox("🧰 " + t["selectTool"], tools)
+tool_files = sorted(f for f in os.listdir(services_dir) if f.endswith(".py"))
+# Show friendly names (e.g. "File converter") instead of raw "File converter.py".
+display_to_file = {f[:-3]: f for f in tool_files}
 
-# 🔍 Секція про мене після selectbox
+selected_display = st.sidebar.selectbox("🧰 " + t["selectTool"], list(display_to_file.keys()))
+
+# 🔍 About section
 with st.sidebar.expander(t["aboutTab"], expanded=False):
     st.subheader(t["aboutTitle"])
     for i in range(1, 5):
@@ -67,10 +57,14 @@ with st.sidebar.expander(t["aboutTab"], expanded=False):
     </a>
     """, unsafe_allow_html=True)
 
-# 🔧  тул
+# 🔒 Privacy notice (GDPR)
+with st.sidebar.expander("🔒 " + t["privacy_title"], expanded=False):
+    st.caption(t["privacy_text"])
+
+# 🔧 Load and run the selected tool
 st.title("🛠️ My Tools Hub")
 
-module_name = selected.replace(".py", "")
+selected = display_to_file[selected_display]
 file_path = os.path.join(services_dir, selected)
 spec = importlib.util.spec_from_file_location("tool_module", file_path)
 tool_module = importlib.util.module_from_spec(spec)

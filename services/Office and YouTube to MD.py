@@ -56,7 +56,7 @@ def get_supported_formats():
     }
 
 def run(lang):
-    t = translations.get(lang, translations.get("en"))
+    t = translations.get(lang, translations["English"])
 
     if "markdown_content" not in st.session_state:
         st.session_state.markdown_content = ""
@@ -110,4 +110,4 @@ def run(lang):
         preview = st.session_state.markdown_content[:2000]
         if len(st.session_state.markdown_content) > 2000:
             preview += f"\n\n{t['md_truncated']}"
-        st.text_area("", value=preview, height=400, disabled=True)
+        st.text_area(t["md_preview"], value=preview, height=400, disabled=True, label_visibility="collapsed")

@@ -1,11 +1,18 @@
-streamlit
-qrcode
-pillow
-xlsxwriter
-openpyxl
-markitdown[all]
-pydub
-gTTS
-PyPDF2
-ebooklib
-fpdf
+# Core app
+streamlit>=1.40,<2.0
+
+# Data / spreadsheets
+pandas>=2.2,<3.0
+openpyxl>=3.1,<4.0
+XlsxWriter>=3.2,<4.0
+
+# QR codes & images
+qrcode>=8.0,<9.0
+pillow>=11.0,<12.0
+
+# Document conversion
+markitdown[all]>=0.1,<0.2
+PyPDF2==3.0.1
+
+# Text-to-speech (PDF -> MP3)
+gTTS>=2.5,<3.0

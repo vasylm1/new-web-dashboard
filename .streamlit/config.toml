@@ -1,0 +1,19 @@
+# Production configuration for My Tools Hub
+
+[browser]
+# GDPR: do not send anonymous usage statistics to Streamlit.
+gatherUsageStats = false
+
+[server]
+# Cap upload size (MB) to limit resource abuse.
+maxUploadSize = 50
+# Hosting platforms terminate TLS; XSRF protection stays on by default.
+enableXsrfProtection = true
+headless = true
+
+[client]
+# Don't leak Python tracebacks to end users in production.
+showErrorDetails = false
+
+[theme]
+primaryColor = "#4361ee"

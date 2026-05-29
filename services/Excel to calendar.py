@@ -1,9 +1,11 @@
 # services/xls_to_ical.py
+import uuid
 import streamlit as st
 import pandas as pd
 from io import BytesIO
-from datetime import datetime
-from translations import translations  # Переконайся, що translations імпортуються правильно
+from datetime import datetime, timezone
+from translations import translations
+
 
 def format_date(dt):
     if pd.isna(dt):
@@ -22,25 +24,48 @@ def format_date(dt):
             return ""
     return dt.strftime("%Y%m%dT%H%M%S")
 
+
+def escape_ics(value):
+    """Escape text per RFC 5545 (backslash, comma, semicolon, newline)."""
+    text = str(value)
+    text = text.replace("\\", "\\\\")
+    text = text.replace(",", "\\,")
+    text = text.replace(";", "\\;")
+    text = text.replace("\r\n", "\\n").replace("\n", "\\n").replace("\r", "\\n")
+    return text
+
+
 def generate_ics(df):
-    ics = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//My Tools Hub//EN\nCALSCALE:GREGORIAN\n"
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//My Tools Hub//EN",
+        "CALSCALE:GREGORIAN",
+    ]
+    dtstamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     for _, row in df.iterrows():
         start = format_date(row[0])
         end = format_date(row[1])
+        if not start or not end:
+            continue  # skip rows without a valid time range
         title = row[2] if pd.notna(row[2]) else "Event"
         description = row[3] if pd.notna(row[3]) else ""
         location = row[4] if pd.notna(row[4]) else ""
-        ics += "BEGIN:VEVENT\n"
-        ics += f"DTSTART:{start}\n"
-        ics += f"DTEND:{end}\n"
-        ics += f"SUMMARY:{title}\n"
+        lines.append("BEGIN:VEVENT")
+        lines.append(f"UID:{uuid.uuid4()}@my-tools-hub")
+        lines.append(f"DTSTAMP:{dtstamp}")
+        lines.append(f"DTSTART:{start}")
+        lines.append(f"DTEND:{end}")
+        lines.append(f"SUMMARY:{escape_ics(title)}")
         if description:
-            ics += f"DESCRIPTION:{description}\n"
+            lines.append(f"DESCRIPTION:{escape_ics(description)}")
         if location:
-            ics += f"LOCATION:{location}\n"
-        ics += "END:VEVENT\n"
-    ics += "END:VCALENDAR"
-    return ics
+            lines.append(f"LOCATION:{escape_ics(location)}")
+        lines.append("END:VEVENT")
+    lines.append("END:VCALENDAR")
+    # RFC 5545 mandates CRLF line endings.
+    return "\r\n".join(lines)
+
 
 def get_template_file():
     sample = pd.DataFrame([
@@ -53,8 +78,9 @@ def get_template_file():
         sample.to_excel(writer, index=False, sheet_name="Events")
     return output.getvalue()
 
+
 def run(lang):
-    t = translations.get(lang) or translations["en"]
+    t = translations.get(lang, translations["English"])
 
     st.markdown(f"### 📅 {t['ical_title']}")
 

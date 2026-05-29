@@ -579,3 +579,50 @@ translations = {
         "download_html": "下载 HTML 签名",
     }
 }
+
+# --- Production / EU additions (merged into the dicts above) ---
+_ADDITIONAL = {
+    "English": {
+        "fileconv_mismatch": "The uploaded file doesn't match the selected conversion.",
+        "fileconv_spinner": "Converting...",
+        "fileconv_no_text": "No extractable text was found in this PDF.",
+        "fileconv_truncated": "The PDF was long, so only the first part was converted to audio.",
+        "privacy_title": "Privacy",
+        "privacy_text": "Files you upload are processed in memory to perform the conversion and are not stored on a server or shared with third parties. The YouTube-to-Markdown tool sends the URL to YouTube to fetch the transcript.",
+    },
+    "Polski": {
+        "fileconv_mismatch": "Przesłany plik nie pasuje do wybranej konwersji.",
+        "fileconv_spinner": "Konwertowanie...",
+        "fileconv_no_text": "W tym pliku PDF nie znaleziono tekstu do wyodrębnienia.",
+        "fileconv_truncated": "Plik PDF był długi, więc na dźwięk przekonwertowano tylko jego początek.",
+        "privacy_title": "Prywatność",
+        "privacy_text": "Przesyłane pliki są przetwarzane w pamięci w celu wykonania konwersji i nie są przechowywane na serwerze ani udostępniane stronom trzecim. Narzędzie YouTube-to-Markdown wysyła adres URL do YouTube, aby pobrać transkrypcję.",
+    },
+    "Deutsch": {
+        "fileconv_mismatch": "Die hochgeladene Datei passt nicht zur ausgewählten Konvertierung.",
+        "fileconv_spinner": "Konvertierung läuft...",
+        "fileconv_no_text": "In dieser PDF wurde kein extrahierbarer Text gefunden.",
+        "fileconv_truncated": "Die PDF war lang, daher wurde nur der erste Teil in Audio umgewandelt.",
+        "privacy_title": "Datenschutz",
+        "privacy_text": "Hochgeladene Dateien werden zur Konvertierung im Arbeitsspeicher verarbeitet und nicht auf einem Server gespeichert oder an Dritte weitergegeben. Das YouTube-zu-Markdown-Tool sendet die URL an YouTube, um das Transkript abzurufen.",
+    },
+    "Українська": {
+        "fileconv_mismatch": "Завантажений файл не відповідає обраному типу конвертації.",
+        "fileconv_spinner": "Конвертація...",
+        "fileconv_no_text": "У цьому PDF не знайдено тексту для вилучення.",
+        "fileconv_truncated": "PDF був довгим, тому в аудіо перетворено лише його початок.",
+        "privacy_title": "Конфіденційність",
+        "privacy_text": "Завантажені файли обробляються в пам’яті для виконання конвертації та не зберігаються на сервері й не передаються третім сторонам. Інструмент YouTube-to-Markdown надсилає URL до YouTube, щоб отримати транскрипцію.",
+    },
+    "中文": {
+        "fileconv_mismatch": "上传的文件与所选转换类型不匹配。",
+        "fileconv_spinner": "正在转换...",
+        "fileconv_no_text": "此 PDF 中未找到可提取的文本。",
+        "fileconv_truncated": "PDF 内容较长，因此仅将前一部分转换为音频。",
+        "privacy_title": "隐私",
+        "privacy_text": "上传的文件在内存中处理以完成转换，不会存储在服务器上，也不会与第三方共享。YouTube 转 Markdown 工具会将链接发送至 YouTube 以获取字幕。",
+    },
+}
+for _lang, _extra in _ADDITIONAL.items():
+    translations.setdefault(_lang, {}).update(_extra)
+

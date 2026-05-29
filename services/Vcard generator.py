@@ -4,21 +4,18 @@ from io import BytesIO
 import qrcode
 from translations import translations
 
-def run(lang):
-    t = translations[lang]
+def escape_vcard(value):
+    """Escape text per RFC 6350 (backslash, comma, semicolon, newline)."""
+    text = str(value)
+    text = text.replace("\\", "\\\\")
+    text = text.replace(",", "\\,")
+    text = text.replace(";", "\\;")
+    text = text.replace("\r\n", "\\n").replace("\n", "\\n").replace("\r", "\\n")
+    return text
 
-    # Додати переклади в translations.py:
-    # "vcard_title": "vCard Generator",
-    # "vcard_name": "Full Name",
-    # "vcard_phone": "Phone",
-    # "vcard_email": "Email",
-    # "vcard_company": "Company",
-    # "vcard_website": "Website",
-    # "vcard_address": "Address",
-    # "vcard_button": "Generate vCard & QR",
-    # "vcard_required": "Name, phone, and email are required.",
-    # "vcard_download": "Download vCard",
-    # "vcard_qr_caption": "QR Code"
+
+def run(lang):
+    t = translations.get(lang, translations["English"])
 
     st.markdown(f"<h2 style='text-align:center'>📇 {t['vcard_title']}</h2>", unsafe_allow_html=True)
 
@@ -34,13 +31,18 @@ def run(lang):
             st.warning(t["vcard_required"])
             return
 
-        vcard = f"BEGIN:VCARD\nVERSION:3.0\nFN:{name}\nTEL;TYPE=CELL:{phone}\nEMAIL:{email}"
+        vcard = (
+            "BEGIN:VCARD\nVERSION:3.0\n"
+            f"FN:{escape_vcard(name)}\n"
+            f"TEL;TYPE=CELL:{escape_vcard(phone)}\n"
+            f"EMAIL:{escape_vcard(email)}"
+        )
         if company:
-            vcard += f"\nORG:{company}"
+            vcard += f"\nORG:{escape_vcard(company)}"
         if website:
-            vcard += f"\nURL:{website}"
+            vcard += f"\nURL:{escape_vcard(website)}"
         if address:
-            vcard += f"\nADR;TYPE=HOME:;;{address}"
+            vcard += f"\nADR;TYPE=HOME:;;{escape_vcard(address)}"
         vcard += "\nEND:VCARD"
 
         # Download button

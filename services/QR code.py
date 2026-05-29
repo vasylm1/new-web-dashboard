@@ -7,7 +7,7 @@ import io
 import zipfile
 
 def run(lang):
-    t = translations[lang]
+    t = translations.get(lang, translations["English"])
 
     st.markdown(f"<h2 style='text-align:center'>{t['title']}</h2>", unsafe_allow_html=True)
 
@@ -165,15 +165,12 @@ def generate_qr_code(text, style, color1, color2):
         img = Image.composite(gradient, Image.new("RGBA", img.size, "white"), bw)
 
     elif style == "solid":
-        img = img.convert("RGBA")
-        pixels = img.load()
-        r, g, b = tuple(int(color1[i:i+2], 16) for i in (1, 3, 5))
-        for y in range(height):
-            for x in range(width):
-                if pixels[x, y][0] < 128:
-                    pixels[x, y] = (r, g, b, 255)
-                else:
-                    pixels[x, y] = (255, 255, 255, 255)
+        r, g, b = tuple(int(color1[i:i + 2], 16) for i in (1, 3, 5))
+        solid = Image.new("RGBA", img.size, (r, g, b, 255))
+        white = Image.new("RGBA", img.size, "white")
+        # Mask: dark QR modules -> use the chosen color, light modules -> white.
+        mask = img.convert("L").point(lambda x: 255 if x < 128 else 0)
+        img = Image.composite(solid, white, mask)
 
     return img
 
