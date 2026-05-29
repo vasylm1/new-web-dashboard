@@ -14,6 +14,8 @@ in its own module under [`services/`](services/) and is auto-discovered by the a
 | Excel to calendar | Convert an Excel sheet of events into an `.ics` calendar file |
 | Office and YouTube to MD | Convert Office/PDF/EPub/HTML documents — or a YouTube transcript — to Markdown |
 | Vcard generator | Build a `.vcf` contact card plus a QR code |
+| Email signature | Build a self-contained HTML email signature (photo, colors, social links) with live preview, copy, and download |
+| Image resizer | Resize & compress images (PNG/JPEG/WEBP) or generate a favicon pack (PNG sizes + `.ico`) |
 
 ## Run locally
 
