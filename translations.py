@@ -1098,3 +1098,20 @@ _TOOLS_BATCH2 = {
 for _lang, _extra in _TOOLS_BATCH2.items():
     translations.setdefault(_lang, {}).update(_extra)
 
+
+# --- Sidebar categories: merged into the dicts above ---
+_CATEGORIES = {
+    "English": {"category": "Category", "cat_marketing": "📣 Marketing", "cat_data": "📊 Data",
+                "cat_files": "📄 Files & Docs", "cat_images": "🎨 Images", "cat_other": "🧰 Other"},
+    "Polski": {"category": "Kategoria", "cat_marketing": "📣 Marketing", "cat_data": "📊 Dane",
+               "cat_files": "📄 Pliki i dokumenty", "cat_images": "🎨 Obrazy", "cat_other": "🧰 Inne"},
+    "Deutsch": {"category": "Kategorie", "cat_marketing": "📣 Marketing", "cat_data": "📊 Daten",
+                "cat_files": "📄 Dateien & Dokumente", "cat_images": "🎨 Bilder", "cat_other": "🧰 Sonstiges"},
+    "Українська": {"category": "Категорія", "cat_marketing": "📣 Маркетинг", "cat_data": "📊 Дані",
+                   "cat_files": "📄 Файли та документи", "cat_images": "🎨 Зображення", "cat_other": "🧰 Інше"},
+    "中文": {"category": "类别", "cat_marketing": "📣 营销", "cat_data": "📊 数据",
+             "cat_files": "📄 文件与文档", "cat_images": "🎨 图片", "cat_other": "🧰 其他"},
+}
+for _lang, _extra in _CATEGORIES.items():
+    translations.setdefault(_lang, {}).update(_extra)
+

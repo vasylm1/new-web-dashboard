@@ -1,8 +1,29 @@
 import streamlit as st
 import os
 import importlib.util
+from collections import defaultdict
 from translations import translations
 from views import about, privacy
+
+# Tool registry: service filename (without .py) -> (category key, title-translation key).
+# The title key reuses each tool's own translated title, so tool names are localized.
+TOOL_REGISTRY = {
+    "QR code": ("cat_marketing", "title"),
+    "Vcard generator": ("cat_marketing", "vcard_title"),
+    "Email signature": ("cat_marketing", "email_signature_title"),
+    "Hashtag extractor": ("cat_marketing", "kw_title"),
+    "Excel to calendar": ("cat_data", "ical_title"),
+    "Spreadsheet cleaner": ("cat_data", "clean_title"),
+    "JSON formatter": ("cat_data", "json_title"),
+    "File converter": ("cat_files", "fileconv_title"),
+    "Office and YouTube to MD": ("cat_files", "md_title"),
+    "Images to PDF": ("cat_files", "img2pdf_title"),
+    "Markdown to HTML": ("cat_files", "md2html_title"),
+    "Image resizer": ("cat_images", "imgresize_title"),
+    "Image watermark": ("cat_images", "wm_title"),
+    "Brand palette": ("cat_images", "palette_title"),
+}
+CATEGORY_ORDER = ["cat_marketing", "cat_data", "cat_files", "cat_images", "cat_other"]
 
 # 🛠 Page configuration
 st.set_page_config(page_title="My Tools Hub", page_icon="🛠️", layout="wide")
@@ -39,23 +60,36 @@ t = translations[lang]
 
 
 def tools_page():
-    """Main hub: pick a tool and run it."""
+    """Main hub: pick a category, then a tool, and run it."""
     st.title("🛠️ My Tools Hub")
 
     services_dir = os.path.join(os.path.dirname(__file__), "services")
     os.makedirs(services_dir, exist_ok=True)
 
     tool_files = sorted(f for f in os.listdir(services_dir) if f.endswith(".py"))
-    # Show friendly names (e.g. "File converter") instead of raw "File converter.py".
-    display_to_file = {f[:-3]: f for f in tool_files}
-
-    if not display_to_file:
+    if not tool_files:
         st.info("No tools are available yet.")
         return
 
-    selected_display = st.sidebar.selectbox("🧰 " + t["selectTool"], list(display_to_file.keys()))
+    # Group tools by category; each entry is (localized_label, filename).
+    groups = defaultdict(list)
+    for fname in tool_files:
+        name = fname[:-3]
+        cat_key, title_key = TOOL_REGISTRY.get(name, ("cat_other", None))
+        label = t.get(title_key, name) if title_key else name
+        groups[cat_key].append((label, fname))
 
-    selected = display_to_file[selected_display]
+    categories = [c for c in CATEGORY_ORDER if c in groups]
+    categories += [c for c in groups if c not in categories]
+
+    cat_key = st.sidebar.selectbox(
+        "🗂️ " + t["category"], categories, format_func=lambda c: t.get(c, c)
+    )
+    tools_in_cat = sorted(groups[cat_key])
+    label_to_file = dict(tools_in_cat)
+    chosen_label = st.sidebar.selectbox("🧰 " + t["selectTool"], list(label_to_file.keys()))
+
+    selected = label_to_file[chosen_label]
     file_path = os.path.join(services_dir, selected)
     spec = importlib.util.spec_from_file_location("tool_module", file_path)
     tool_module = importlib.util.module_from_spec(spec)
