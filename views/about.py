@@ -15,6 +15,10 @@ def render(t):
     st.markdown(t["aboutText4"])
 
     st.divider()
+    st.subheader(t["about_languages_title"])
+    st.markdown(t["about_languages"])
+
+    st.divider()
     st.subheader(t["about_connect"])
     st.markdown(
         f"""
