@@ -4,7 +4,7 @@ import importlib.util
 from translations import translations
 
 # 🛠 Page configuration
-st.set_page_config(page_title="🛠️ My Tools Hub", layout="wide")
+st.set_page_config(page_title="My Tools Hub", page_icon="🛠️", layout="wide")
 
 # 🎨 Embedded styles
 st.markdown("""
