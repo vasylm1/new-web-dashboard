@@ -1,9 +1,23 @@
 import streamlit as st
 import os
+import re
+import html
 import importlib.util
 from collections import defaultdict
+from urllib.parse import quote
 from translations import translations
 from views import about, privacy
+
+# Accent color per category (used for the card left-border).
+CAT_COLORS = {
+    "cat_marketing": "#4361ee", "cat_data": "#0ea5e9", "cat_files": "#8b5cf6",
+    "cat_images": "#ec4899", "cat_other": "#64748b",
+}
+_EMOJI = re.compile(r'[\U0001F000-\U0001FAFF←-⇿⌀-➿⬀-⯿☀-⛿][️‍⃣]?\s*')
+
+
+def _noemoji(text):
+    return _EMOJI.sub("", text).strip()
 
 # Tool registry: service filename (without .py) -> (category key, title-translation key).
 # The title key reuses each tool's own translated title, so tool names are localized.
@@ -106,6 +120,24 @@ h1 { font-weight:800; }
   margin-top:1rem; font-weight:600; transition:background .15s ease;
 }
 .social-link:hover { background:rgba(67,97,238,.18); }
+
+/* Landing hero + tool cards */
+.hero { padding:6px 0 14px; }
+.hero h1 { font-size:2.1rem; margin:0 0 4px; }
+.hero p { color:#64748b; margin:0; font-size:1.02rem; }
+.cat-head { font-size:.78rem; text-transform:uppercase; letter-spacing:.07em;
+  color:#64748b; font-weight:700; margin:22px 0 8px; }
+.tool-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:14px; margin-bottom:8px; }
+.tool-card { display:flex; flex-direction:column; gap:5px; padding:15px 17px;
+  background:#fff; border:1px solid var(--line); border-left:4px solid var(--cat,#4361ee);
+  border-radius:14px; text-decoration:none; transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease; }
+.tool-card:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(16,24,40,.08); }
+.tool-card .tc-name { color:var(--ink); font-weight:650; font-size:.97rem; line-height:1.25; }
+.tool-card .tc-cat { color:#94a3b8; font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; }
+.back-link { display:inline-block; margin-bottom:8px; color:var(--primary);
+  text-decoration:none; font-weight:600; }
+.back-link:hover { text-decoration:underline; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -115,43 +147,62 @@ lang = st.sidebar.selectbox("🌍 Language", languages, index=0)
 t = translations[lang]
 
 
-def tools_page():
-    """Main hub: pick a category, then a tool, and run it."""
-    st.title("🛠️ My Tools Hub")
-
+def _run_tool(filename):
     services_dir = os.path.join(os.path.dirname(__file__), "services")
-    os.makedirs(services_dir, exist_ok=True)
-
-    tool_files = sorted(f for f in os.listdir(services_dir) if f.endswith(".py"))
-    if not tool_files:
-        st.info("No tools are available yet.")
-        return
-
-    # Group tools by category; each entry is (localized_label, filename).
-    groups = defaultdict(list)
-    for fname in tool_files:
-        name = fname[:-3]
-        cat_key, title_key = TOOL_REGISTRY.get(name, ("cat_other", None))
-        label = t.get(title_key, name) if title_key else name
-        groups[cat_key].append((label, fname))
-
-    categories = [c for c in CATEGORY_ORDER if c in groups]
-    categories += [c for c in groups if c not in categories]
-
-    cat_key = st.sidebar.selectbox(
-        "🗂️ " + t["category"], categories, format_func=lambda c: t.get(c, c)
-    )
-    tools_in_cat = sorted(groups[cat_key])
-    label_to_file = dict(tools_in_cat)
-    chosen_label = st.sidebar.selectbox("🧰 " + t["selectTool"], list(label_to_file.keys()))
-
-    selected = label_to_file[chosen_label]
-    file_path = os.path.join(services_dir, selected)
+    file_path = os.path.join(services_dir, filename)
     spec = importlib.util.spec_from_file_location("tool_module", file_path)
     tool_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(tool_module)
     if hasattr(tool_module, "run"):
         tool_module.run(lang)
+
+
+def tools_page():
+    """Searchable card grid: pick a tool to open it (?tool=<file id>)."""
+    services_dir = os.path.join(os.path.dirname(__file__), "services")
+    os.makedirs(services_dir, exist_ok=True)
+    by_id = {f[:-3]: f for f in sorted(os.listdir(services_dir)) if f.endswith(".py")}
+
+    # An open tool: show a back link, then run it.
+    active = st.query_params.get("tool")
+    if active in by_id:
+        st.markdown(f'<a class="back-link" href="?" target="_self">← {html.escape(t["back_to_tools"])}</a>',
+                    unsafe_allow_html=True)
+        _run_tool(by_id[active])
+        return
+
+    # Landing: hero + search + grid grouped by category.
+    st.markdown(
+        f'<div class="hero"><h1>My Tools Hub</h1>'
+        f'<p>{html.escape(t["tools_tagline"])} · {len(by_id)} {html.escape(t["tools_word"])}</p></div>',
+        unsafe_allow_html=True,
+    )
+    query = st.text_input("search", placeholder="🔍  " + t["tools_search"], label_visibility="collapsed").strip().lower()
+
+    groups = defaultdict(list)
+    for fid, fname in by_id.items():
+        cat_key, title_key = TOOL_REGISTRY.get(fid, ("cat_other", None))
+        label = t.get(title_key, fid) if title_key else fid
+        if query and query not in label.lower():
+            continue
+        groups[cat_key].append((label, fid))
+
+    categories = [c for c in CATEGORY_ORDER if c in groups] + [c for c in groups if c not in CATEGORY_ORDER]
+    if not categories:
+        st.info(t["tools_none"])
+        return
+
+    for cat in categories:
+        color = CAT_COLORS.get(cat, "#4361ee")
+        cat_label = html.escape(_noemoji(t.get(cat, cat)))
+        cards = "".join(
+            f'<a class="tool-card" style="--cat:{color}" href="?tool={quote(fid)}" target="_self">'
+            f'<span class="tc-name">{html.escape(label)}</span>'
+            f'<span class="tc-cat">{cat_label}</span></a>'
+            for label, fid in sorted(groups[cat])
+        )
+        st.markdown(f'<div class="cat-head">{cat_label}</div><div class="tool-grid">{cards}</div>',
+                    unsafe_allow_html=True)
 
 
 # 🧭 Multipage navigation
