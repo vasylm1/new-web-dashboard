@@ -61,25 +61,51 @@ st.set_page_config(page_title="My Tools Hub", page_icon="🛠️", layout="wide"
 # 🎨 Embedded styles
 st.markdown("""
 <style>
-:root {
-  --primary: #4361ee;
-  --accent: #4895ef;
-  --secondary: #3f37c9;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root { --primary:#4361ee; --accent:#4895ef; --secondary:#3a0ca3; --ink:#0f172a; --line:#e8edf5; }
+
+html, body, [class*="css"], .stApp { font-family:'Inter','Segoe UI',sans-serif; }
+.stApp { background:#f7f9fc; }
+
+/* Headings */
+h1, h2, h3 { color:var(--ink); letter-spacing:-0.015em; font-weight:700; }
+h1 { font-weight:800; }
+
+/* Sidebar */
+[data-testid="stSidebar"] { background:#ffffff; border-right:1px solid var(--line); }
+[data-testid="stSidebar"] label { font-weight:600; }
+
+/* Primary + download buttons */
+.stButton > button, [data-testid="stDownloadButton"] > button {
+  border-radius:10px; border:1px solid transparent; font-weight:600; color:#fff;
+  background:linear-gradient(135deg, var(--primary), var(--accent));
+  box-shadow:0 1px 2px rgba(67,97,238,.25);
+  transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
 }
-html, body, [class*="css"] {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #f5f7fa 0%, #dfe7f5 100%) !important;
+.stButton > button:hover, [data-testid="stDownloadButton"] > button:hover {
+  transform:translateY(-1px); filter:brightness(1.05); color:#fff;
+  box-shadow:0 6px 16px rgba(67,97,238,.28);
 }
+
+/* Rounded inputs */
+[data-baseweb="input"], [data-baseweb="select"] > div, .stTextArea textarea { border-radius:10px !important; }
+
+/* Metrics as cards */
+[data-testid="stMetric"] {
+  background:#fff; border:1px solid var(--line); border-radius:14px;
+  padding:14px 16px; box-shadow:0 1px 2px rgba(16,24,40,.04);
+}
+
+/* Rounded tables & code blocks */
+[data-testid="stDataFrame"], pre { border-radius:12px; overflow:hidden; }
+
 .social-link {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background-color: rgba(67, 97, 238, 0.1);
-  border-radius: 8px;
-  text-decoration: none;
-  color: #4361ee;
-  margin-top: 1rem;
-  font-weight: bold;
+  display:inline-block; padding:.55rem 1.1rem; background:rgba(67,97,238,.10);
+  border-radius:10px; text-decoration:none; color:var(--primary);
+  margin-top:1rem; font-weight:600; transition:background .15s ease;
 }
+.social-link:hover { background:rgba(67,97,238,.18); }
 </style>
 """, unsafe_allow_html=True)
 

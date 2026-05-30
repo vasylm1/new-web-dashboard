@@ -1691,3 +1691,20 @@ _BATCH = {
 for _lang, _extra in _BATCH.items():
     translations.setdefault(_lang, {}).update(_extra)
 
+
+# --- Certificate styles + logo (shared by PDF and image certificate tools) ---
+_CERT_STYLE = {
+    "English": {"cert_logo": "Logo (optional)", "cert_style": "Style", "cert_style_classic": "Classic",
+                "cert_style_modern": "Modern", "cert_style_elegant": "Elegant", "cert_style_minimal": "Minimal"},
+    "Polski": {"cert_logo": "Logo (opcjonalnie)", "cert_style": "Styl", "cert_style_classic": "Klasyczny",
+               "cert_style_modern": "Nowoczesny", "cert_style_elegant": "Elegancki", "cert_style_minimal": "Minimalistyczny"},
+    "Deutsch": {"cert_logo": "Logo (optional)", "cert_style": "Stil", "cert_style_classic": "Klassisch",
+                "cert_style_modern": "Modern", "cert_style_elegant": "Elegant", "cert_style_minimal": "Minimalistisch"},
+    "Українська": {"cert_logo": "Логотип (необов’язково)", "cert_style": "Стиль", "cert_style_classic": "Класичний",
+                   "cert_style_modern": "Сучасний", "cert_style_elegant": "Елегантний", "cert_style_minimal": "Мінімалістичний"},
+    "中文": {"cert_logo": "Logo（可选）", "cert_style": "样式", "cert_style_classic": "经典",
+             "cert_style_modern": "现代", "cert_style_elegant": "优雅", "cert_style_minimal": "极简"},
+}
+for _lang, _extra in _CERT_STYLE.items():
+    translations.setdefault(_lang, {}).update(_extra)
+

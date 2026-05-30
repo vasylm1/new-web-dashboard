@@ -46,8 +46,8 @@ def run(lang):
     st.title(t["sb_title"])
 
     preset = st.selectbox(t["sb_preset"], list(PRESETS.keys()))
-    name = st.text_input(t["sb_name"], placeholder="Vasyl Madei")
-    tagline = st.text_input(t["sb_tagline"], placeholder="Product Marketing · Data · Automation")
+    name = st.text_input(t["sb_name"], placeholder="Jane Doe")
+    tagline = st.text_input(t["sb_tagline"], placeholder="Marketing · Strategy · Growth")
     c1, c2 = st.columns(2)
     bg1 = c1.color_picker(t["sb_bg1"], "#3f37c9")
     bg2 = c2.color_picker(t["sb_bg2"], "#4895ef")

@@ -13,7 +13,7 @@ def run(lang):
     headline = st.text_input(t["cv_headline"])
     contact = st.text_input(t["cv_contact"], placeholder="email · phone · city")
     summary = st.text_area(t["cv_summary"], height=90)
-    experience = st.text_area(t["cv_experience"], height=120, placeholder="Product Marketeer — Signify (2025–now)\n...")
+    experience = st.text_area(t["cv_experience"], height=120, placeholder="Marketing Manager — Acme Inc. (2023–now)\n...")
     education = st.text_area(t["cv_education"], height=90)
     skills = st.text_input(t["cv_skills"], placeholder="Power BI, SQL, Python")
 
