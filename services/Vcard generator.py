@@ -17,7 +17,7 @@ def escape_vcard(value):
 def run(lang):
     t = translations.get(lang, translations["English"])
 
-    st.markdown(f"<h2 style='text-align:center'>📇 {t['vcard_title']}</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align:center'>{t['vcard_title']}</h2>", unsafe_allow_html=True)
 
     name = st.text_input(t["vcard_name"], placeholder="John Doe")
     phone = st.text_input(t["vcard_phone"], placeholder="+123456789")

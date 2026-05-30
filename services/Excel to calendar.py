@@ -82,7 +82,7 @@ def get_template_file():
 def run(lang):
     t = translations.get(lang, translations["English"])
 
-    st.markdown(f"### 📅 {t['ical_title']}")
+    st.markdown(f"### {t['ical_title']}")
 
     st.markdown(f"#### 📘 {t['ical_instructions']}")
     st.download_button(f"📥 {t['ical_template']}", get_template_file(), file_name="Calendar_Template.xlsx")
