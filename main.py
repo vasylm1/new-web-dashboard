@@ -144,7 +144,21 @@ h1 { font-weight:800; }
 # 🌍 Language selector — shared across every page
 languages = list(translations.keys())
 lang = st.sidebar.selectbox("🌍 Language", languages, index=0)
-t = translations[lang]
+# Merge over English so any key missing in the selected language never crashes.
+t = {**translations.get("English", {}), **translations.get(lang, {})}
+
+# Safe defaults for this file's own UI strings (resilient to a partial deploy).
+_UI_DEFAULTS = {
+    "nav_tools": "Tools", "nav_about": "About", "nav_privacy": "Privacy",
+    "back_to_tools": "All tools", "tools_tagline": "Your toolkit for everyday tasks",
+    "tools_word": "tools", "tools_search": "Search tools…", "tools_none": "No tools match your search.",
+    "cat_marketing": "Marketing", "cat_data": "Data", "cat_files": "Files",
+    "cat_images": "Images", "cat_other": "Other",
+}
+
+
+def ui(key):
+    return t.get(key) or _UI_DEFAULTS.get(key, key)
 
 
 def _run_tool(filename):
@@ -166,7 +180,7 @@ def tools_page():
     # An open tool: show a back link, then run it.
     active = st.query_params.get("tool")
     if active in by_id:
-        st.markdown(f'<a class="back-link" href="?" target="_self">← {html.escape(t["back_to_tools"])}</a>',
+        st.markdown(f'<a class="back-link" href="?" target="_self">← {html.escape(ui("back_to_tools"))}</a>',
                     unsafe_allow_html=True)
         _run_tool(by_id[active])
         return
@@ -174,10 +188,10 @@ def tools_page():
     # Landing: hero + search + grid grouped by category.
     st.markdown(
         f'<div class="hero"><h1>My Tools Hub</h1>'
-        f'<p>{html.escape(t["tools_tagline"])} · {len(by_id)} {html.escape(t["tools_word"])}</p></div>',
+        f'<p>{html.escape(ui("tools_tagline"))} · {len(by_id)} {html.escape(ui("tools_word"))}</p></div>',
         unsafe_allow_html=True,
     )
-    query = st.text_input("search", placeholder="🔍  " + t["tools_search"], label_visibility="collapsed").strip().lower()
+    query = st.text_input("search", placeholder="🔍  " + ui("tools_search"), label_visibility="collapsed").strip().lower()
 
     groups = defaultdict(list)
     for fid, fname in by_id.items():
@@ -189,12 +203,12 @@ def tools_page():
 
     categories = [c for c in CATEGORY_ORDER if c in groups] + [c for c in groups if c not in CATEGORY_ORDER]
     if not categories:
-        st.info(t["tools_none"])
+        st.info(ui("tools_none"))
         return
 
     for cat in categories:
         color = CAT_COLORS.get(cat, "#4361ee")
-        cat_label = html.escape(_noemoji(t.get(cat, cat)))
+        cat_label = html.escape(_noemoji(ui(cat)))
         cards = "".join(
             f'<a class="tool-card" style="--cat:{color}" href="?tool={quote(fid)}" target="_self">'
             f'<span class="tc-name">{html.escape(label)}</span>'
@@ -207,8 +221,8 @@ def tools_page():
 
 # 🧭 Multipage navigation
 pages = [
-    st.Page(tools_page, title=t["nav_tools"], icon="🧰", default=True),
-    st.Page(lambda: about.render(t), title=t["nav_about"], icon="👤", url_path="about"),
-    st.Page(lambda: privacy.render(t), title=t["nav_privacy"], icon="🔒", url_path="privacy"),
+    st.Page(tools_page, title=ui("nav_tools"), icon="🧰", default=True),
+    st.Page(lambda: about.render(t), title=ui("nav_about"), icon="👤", url_path="about"),
+    st.Page(lambda: privacy.render(t), title=ui("nav_privacy"), icon="🔒", url_path="privacy"),
 ]
 st.navigation(pages).run()
