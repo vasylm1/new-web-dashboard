@@ -17,6 +17,13 @@ markitdown[docx,pptx,xlsx,xls,pdf,youtube-transcription]>=0.1,<0.2
 PyPDF2==3.0.1
 # Markdown -> HTML tool
 markdown>=3.5,<4.0
+# HTML -> Markdown tool
+markdownify>=0.13,<1.0
+
+# Charts, SQL formatting, sample data
+matplotlib>=3.8,<4.0
+sqlparse>=0.5,<0.6
+Faker>=24,<40
 
 # Text-to-speech (PDF -> MP3)
 gTTS>=2.5,<3.0

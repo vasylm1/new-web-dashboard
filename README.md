@@ -23,6 +23,21 @@ in its own module under [`services/`](services/) and is auto-discovered by the a
 | Markdown to HTML | Render Markdown to styled, self-contained HTML with preview and download |
 | Image watermark | Overlay text or a logo watermark on an image (position, opacity, size) |
 | Brand palette | Extract a dominant color palette (HEX) from an image and export as CSS |
+| Copy analyzer | Word/char/sentence counts, reading time, and Flesch readability for copy |
+| Headline analyzer | Score a headline on length, power words, and numbers with SEO length hints |
+| Persona builder | Build a persona/ICP one-pager and export it as HTML |
+| Chart maker | Turn a CSV/Excel column into a bar/line/pie chart (PNG) |
+| Datetime toolkit | Date difference, workdays-between, and timezone conversion |
+| Unit converter | Convert length, mass, temperature, and data units |
+| SQL formatter | Pretty-print and standardize SQL queries |
+| Data anonymizer | Mask emails/phones and hash a chosen column in CSV/Excel |
+| Fake data generator | Generate locale-aware sample data (name/email/company…) as CSV |
+| Currency converter | Convert between currencies using live rates (open.er-api.com) |
+| PDF to text | Extract selectable text from a PDF |
+| HTML to Markdown | Convert pasted HTML into Markdown |
+| Text diff | Compare two texts and highlight added/removed lines |
+| Social cropper | Crop images to Instagram/Facebook/LinkedIn/X presets |
+| Meme generator | Add top/bottom captions to an image |
 
 ## Run locally
 
