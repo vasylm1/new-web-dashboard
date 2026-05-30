@@ -77,67 +77,89 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-:root { --primary:#4361ee; --accent:#4895ef; --secondary:#3a0ca3; --ink:#0f172a; --line:#e8edf5; }
+:root { --primary:#4f46e5; --accent:#6366f1; --ink:#0f172a; --muted:#64748b; --line:#e9edf4; --bg:#f6f7fb; }
 
-html, body, [class*="css"], .stApp { font-family:'Inter','Segoe UI',sans-serif; }
-.stApp { background:#f7f9fc; }
+html, body, [class*="css"], .stApp { font-family:'Inter','Segoe UI',sans-serif; color:var(--ink); }
+.stApp { background:var(--bg); }
 
-/* Headings */
-h1, h2, h3 { color:var(--ink); letter-spacing:-0.015em; font-weight:700; }
+/* Hide Streamlit chrome for an app-like shell */
+#MainMenu, [data-testid="stToolbar"], [data-testid="stDecoration"], footer { display:none !important; }
+[data-testid="stHeader"] { background:transparent; height:0; }
+
+/* Center & constrain content */
+.block-container { max-width:1160px; padding-top:2.2rem; padding-bottom:4rem; }
+
+/* Typography */
+h1, h2, h3 { color:var(--ink); letter-spacing:-0.02em; font-weight:700; }
 h1 { font-weight:800; }
 
 /* Sidebar */
 [data-testid="stSidebar"] { background:#ffffff; border-right:1px solid var(--line); }
-[data-testid="stSidebar"] label { font-weight:600; }
+[data-testid="stSidebar"] label { font-weight:600; color:var(--ink); }
+[data-testid="stSidebarNav"] { padding-top:.5rem; }
 
-/* Primary + download buttons */
+/* Buttons */
 .stButton > button, [data-testid="stDownloadButton"] > button {
-  border-radius:10px; border:1px solid transparent; font-weight:600; color:#fff;
+  border-radius:11px; border:1px solid transparent; font-weight:600; color:#fff; padding:.5rem 1.05rem;
   background:linear-gradient(135deg, var(--primary), var(--accent));
-  box-shadow:0 1px 2px rgba(67,97,238,.25);
+  box-shadow:0 1px 2px rgba(79,70,229,.20);
   transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
 }
 .stButton > button:hover, [data-testid="stDownloadButton"] > button:hover {
-  transform:translateY(-1px); filter:brightness(1.05); color:#fff;
-  box-shadow:0 6px 16px rgba(67,97,238,.28);
+  transform:translateY(-1px); filter:brightness(1.06); color:#fff;
+  box-shadow:0 8px 20px rgba(79,70,229,.26);
 }
 
-/* Rounded inputs */
-[data-baseweb="input"], [data-baseweb="select"] > div, .stTextArea textarea { border-radius:10px !important; }
+/* Inputs */
+[data-baseweb="input"], [data-baseweb="select"] > div, .stTextArea textarea, [data-baseweb="base-input"] {
+  border-radius:11px !important;
+}
+[data-testid="stTextInput"] input { padding:.6rem .9rem; }
 
 /* Metrics as cards */
 [data-testid="stMetric"] {
-  background:#fff; border:1px solid var(--line); border-radius:14px;
-  padding:14px 16px; box-shadow:0 1px 2px rgba(16,24,40,.04);
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  padding:16px 18px; box-shadow:0 1px 2px rgba(16,24,40,.04);
 }
 
 /* Rounded tables & code blocks */
-[data-testid="stDataFrame"], pre { border-radius:12px; overflow:hidden; }
+[data-testid="stDataFrame"], pre { border-radius:14px; overflow:hidden; border:1px solid var(--line); }
 
 .social-link {
-  display:inline-block; padding:.55rem 1.1rem; background:rgba(67,97,238,.10);
-  border-radius:10px; text-decoration:none; color:var(--primary);
+  display:inline-block; padding:.6rem 1.2rem; background:rgba(79,70,229,.10);
+  border-radius:11px; text-decoration:none; color:var(--primary);
   margin-top:1rem; font-weight:600; transition:background .15s ease;
 }
-.social-link:hover { background:rgba(67,97,238,.18); }
+.social-link:hover { background:rgba(79,70,229,.18); }
 
-/* Landing hero + tool cards */
-.hero { padding:6px 0 14px; }
-.hero h1 { font-size:2.1rem; margin:0 0 4px; }
-.hero p { color:#64748b; margin:0; font-size:1.02rem; }
-.cat-head { font-size:.78rem; text-transform:uppercase; letter-spacing:.07em;
-  color:#64748b; font-weight:700; margin:22px 0 8px; }
-.tool-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
-  gap:14px; margin-bottom:8px; }
-.tool-card { display:flex; flex-direction:column; gap:5px; padding:15px 17px;
-  background:#fff; border:1px solid var(--line); border-left:4px solid var(--cat,#4361ee);
-  border-radius:14px; text-decoration:none; transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease; }
-.tool-card:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(16,24,40,.08); }
-.tool-card .tc-name { color:var(--ink); font-weight:650; font-size:.97rem; line-height:1.25; }
-.tool-card .tc-cat { color:#94a3b8; font-size:.7rem; text-transform:uppercase; letter-spacing:.05em; }
-.back-link { display:inline-block; margin-bottom:8px; color:var(--primary);
-  text-decoration:none; font-weight:600; }
-.back-link:hover { text-decoration:underline; }
+/* ---------- Landing ---------- */
+.hero { padding:4px 0 22px; border-bottom:1px solid var(--line); margin-bottom:18px; }
+.hero h1 { font-size:2.3rem; margin:0 0 6px;
+  background:linear-gradient(90deg,#1e1b4b,#4f46e5); -webkit-background-clip:text;
+  background-clip:text; -webkit-text-fill-color:transparent; }
+.hero p { color:var(--muted); margin:0; font-size:1.05rem; }
+
+.cat-head { display:flex; align-items:center; gap:8px; font-size:.74rem; text-transform:uppercase;
+  letter-spacing:.08em; color:var(--muted); font-weight:700; margin:26px 0 10px; }
+.cat-head::before { content:""; width:9px; height:9px; border-radius:3px; background:var(--cat,#4f46e5); }
+
+.tool-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(248px,1fr)); gap:14px; }
+.tool-card { display:flex; align-items:center; gap:13px; padding:14px 16px;
+  background:#fff; border:1px solid var(--line); border-radius:16px;
+  box-shadow:0 1px 2px rgba(16,24,40,.04);
+  transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease; }
+.tool-card:hover { transform:translateY(-2px); border-color:var(--cat,#4f46e5);
+  box-shadow:0 12px 26px rgba(16,24,40,.10); }
+.tc-badge { flex:0 0 auto; width:44px; height:44px; border-radius:12px; color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:700; font-size:1.1rem;
+  background:var(--cat,#4f46e5); }
+.tc-name { color:var(--ink); font-weight:650; font-size:.98rem; line-height:1.22; }
+/* Kill Streamlit's link underline/colour inside cards */
+.tool-card, .tool-card:hover, .tool-card *, .tc-name, .tc-badge { text-decoration:none !important; }
+
+.back-link { display:inline-block; margin-bottom:10px; color:var(--primary);
+  text-decoration:none !important; font-weight:600; }
+.back-link:hover { opacity:.8; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -207,16 +229,18 @@ def tools_page():
         return
 
     for cat in categories:
-        color = CAT_COLORS.get(cat, "#4361ee")
+        color = CAT_COLORS.get(cat, "#4f46e5")
         cat_label = html.escape(_noemoji(ui(cat)))
-        cards = "".join(
-            f'<a class="tool-card" style="--cat:{color}" href="?tool={quote(fid)}" target="_self">'
-            f'<span class="tc-name">{html.escape(label)}</span>'
-            f'<span class="tc-cat">{cat_label}</span></a>'
-            for label, fid in sorted(groups[cat])
-        )
-        st.markdown(f'<div class="cat-head">{cat_label}</div><div class="tool-grid">{cards}</div>',
-                    unsafe_allow_html=True)
+        cards = ""
+        for label, fid in sorted(groups[cat]):
+            badge = html.escape((label.strip()[:1] or "•").upper())
+            cards += (
+                f'<a class="tool-card" style="--cat:{color}" href="?tool={quote(fid)}" target="_self">'
+                f'<span class="tc-badge">{badge}</span>'
+                f'<span class="tc-name">{html.escape(label)}</span></a>'
+            )
+        st.markdown(f'<div class="cat-head" style="--cat:{color}">{cat_label}</div>'
+                    f'<div class="tool-grid">{cards}</div>', unsafe_allow_html=True)
 
 
 # 🧭 Multipage navigation
