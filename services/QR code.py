@@ -1,10 +1,53 @@
 import streamlit as st
 import qrcode
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from translations import translations
 import pandas as pd
 import io
 import zipfile
+
+_SHEET_FONT_PATHS = ["/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"]
+
+
+def _sheet_font(size):
+    for p in _SHEET_FONT_PATHS:
+        try:
+            return ImageFont.truetype(p, size)
+        except Exception:
+            continue
+    return ImageFont.load_default()
+
+
+def make_qr_sheet(qr_images, file_names, cols=3, rows=4):
+    """Lay QR codes (with labels) onto A4 pages and return PDF bytes."""
+    PW, PH = 1240, 1754  # A4 at ~150 dpi
+    margin = 60
+    cell_w = (PW - 2 * margin) // cols
+    cell_h = (PH - 2 * margin) // rows
+    per_page = cols * rows
+    font = _sheet_font(22)
+    pages = []
+    page = None
+    for i, (img, name) in enumerate(zip(qr_images, file_names)):
+        if i % per_page == 0:
+            page = Image.new("RGB", (PW, PH), "white")
+        r, c = divmod(i % per_page, cols)
+        x = margin + c * cell_w
+        y = margin + r * cell_h
+        qr_size = min(cell_w, cell_h) - 70
+        qr = img.convert("RGB").resize((qr_size, qr_size))
+        page.paste(qr, (x + (cell_w - qr_size) // 2, y))
+        draw = ImageDraw.Draw(page)
+        label = str(name)[:24]
+        bbox = draw.textbbox((0, 0), label, font=font)
+        draw.text((x + (cell_w - (bbox[2] - bbox[0])) // 2, y + qr_size + 8), label, font=font, fill="black")
+        if i % per_page == per_page - 1:
+            pages.append(page)
+    if page is not None and (page not in pages):
+        pages.append(page)
+    buf = io.BytesIO()
+    pages[0].save(buf, "PDF", save_all=True, append_images=pages[1:])
+    return buf.getvalue()
 
 def run(lang):
     t = translations.get(lang, translations["English"])
@@ -122,13 +165,20 @@ def run_batch_qr(t):
                         zip_file.writestr(f"{name}.png", img_bytes)
                 
                 zip_buffer.seek(0)
-                st.download_button(
+                col_zip, col_pdf = st.columns(2)
+                col_zip.download_button(
                     label=t["qr_download_all"],
                     data=zip_buffer.getvalue(),
                     file_name="qr_codes.zip",
                     mime="application/zip"
                 )
-                
+                col_pdf.download_button(
+                    label=t["qr_print_sheet"],
+                    data=make_qr_sheet(qr_images, file_names),
+                    file_name="qr_print_sheet.pdf",
+                    mime="application/pdf"
+                )
+
                 # Show preview
                 st.subheader("Preview")
                 preview_cols = st.columns(3)

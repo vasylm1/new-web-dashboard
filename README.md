@@ -38,6 +38,21 @@ in its own module under [`services/`](services/) and is auto-discovered by the a
 | Text diff | Compare two texts and highlight added/removed lines |
 | Social cropper | Crop images to Instagram/Facebook/LinkedIn/X presets |
 | Meme generator | Add top/bottom captions to an image |
+| Newsletter builder | Build a responsive HTML email newsletter with live preview |
+| Roadmap maker | Generate a roadmap/timeline graphic from milestones |
+| Sell sheet | Build a product one-pager and export it as HTML |
+| Email list validator | Validate, dedupe, and summarize an email column from CSV/Excel |
+| Resume builder | Fill a form and export a styled CV as PDF |
+| Cover letter | Generate a formatted cover-letter PDF |
+| Certificate generator | Create a printable certificate PDF |
+| PDF watermark | Stamp diagonal text (e.g. DRAFT) onto every PDF page |
+| EPUB builder | Turn Markdown chapters into an EPUB e-book |
+| Label sheet | Lay labels out on a printable grid (PDF) |
+| Screenshot beautifier | Add a gradient background, padding, rounded corners, and shadow |
+| Browser mockup | Wrap a screenshot in a browser-window frame |
+| Device mockup | Place a screenshot into a phone or laptop frame |
+| Social banner | Generate a LinkedIn/X/Facebook/YouTube banner with name + tagline |
+| Certificate image | Create a certificate as a PNG image |
 
 ## Run locally
 
