@@ -1644,3 +1644,50 @@ _TOOLS_BATCH4 = {
 for _lang, _extra in _TOOLS_BATCH4.items():
     translations.setdefault(_lang, {}).update(_extra)
 
+
+# --- Shared batch-mode labels: merged into the dicts above ---
+_BATCH = {
+    "English": {
+        "batch_mode": "Mode", "batch_single": "Single", "batch_multi": "Batch",
+        "batch_upload": "Upload CSV or Excel (one row per item):",
+        "batch_files_upload": "Upload images (you can select several):",
+        "batch_name_col": "Name column", "batch_template": "Download template",
+        "batch_generate": "Generate all", "batch_zip": "Download all (ZIP)",
+        "batch_done": "Generated", "batch_empty": "No valid rows or files found.",
+    },
+    "Polski": {
+        "batch_mode": "Tryb", "batch_single": "Pojedynczy", "batch_multi": "Wsadowy",
+        "batch_upload": "Prześlij plik CSV lub Excel (jeden wiersz na element):",
+        "batch_files_upload": "Prześlij obrazy (możesz wybrać kilka):",
+        "batch_name_col": "Kolumna z nazwą", "batch_template": "Pobierz szablon",
+        "batch_generate": "Generuj wszystkie", "batch_zip": "Pobierz wszystkie (ZIP)",
+        "batch_done": "Wygenerowano", "batch_empty": "Nie znaleziono prawidłowych wierszy ani plików.",
+    },
+    "Deutsch": {
+        "batch_mode": "Modus", "batch_single": "Einzeln", "batch_multi": "Stapel",
+        "batch_upload": "CSV- oder Excel-Datei hochladen (eine Zeile pro Element):",
+        "batch_files_upload": "Bilder hochladen (mehrere möglich):",
+        "batch_name_col": "Namensspalte", "batch_template": "Vorlage herunterladen",
+        "batch_generate": "Alle generieren", "batch_zip": "Alle herunterladen (ZIP)",
+        "batch_done": "Generiert", "batch_empty": "Keine gültigen Zeilen oder Dateien gefunden.",
+    },
+    "Українська": {
+        "batch_mode": "Режим", "batch_single": "Один", "batch_multi": "Пакетний",
+        "batch_upload": "Завантажте CSV або Excel (один рядок на елемент):",
+        "batch_files_upload": "Завантажте зображення (можна кілька):",
+        "batch_name_col": "Стовпець з ім’ям", "batch_template": "Завантажити шаблон",
+        "batch_generate": "Згенерувати всі", "batch_zip": "Завантажити всі (ZIP)",
+        "batch_done": "Згенеровано", "batch_empty": "Не знайдено дійсних рядків або файлів.",
+    },
+    "中文": {
+        "batch_mode": "模式", "batch_single": "单个", "batch_multi": "批量",
+        "batch_upload": "上传 CSV 或 Excel（每行一项）：",
+        "batch_files_upload": "上传图片（可多选）：",
+        "batch_name_col": "姓名列", "batch_template": "下载模板",
+        "batch_generate": "全部生成", "batch_zip": "下载全部 (ZIP)",
+        "batch_done": "已生成", "batch_empty": "未找到有效的行或文件。",
+    },
+}
+for _lang, _extra in _BATCH.items():
+    translations.setdefault(_lang, {}).update(_extra)
+

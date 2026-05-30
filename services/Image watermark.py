@@ -1,4 +1,5 @@
 import io
+import zipfile
 from PIL import Image, ImageDraw, ImageFont
 import streamlit as st
 from translations import translations
@@ -35,29 +36,56 @@ def run(lang):
     t = translations.get(lang, translations["English"])
     st.title(t["wm_title"])
 
-    up = st.file_uploader(t["wm_upload"], type=["png", "jpg", "jpeg", "webp"])
+    batch_map = {t["batch_single"]: "single", t["batch_multi"]: "batch"}
+    batch = batch_map[st.radio(t["batch_mode"], list(batch_map.keys()), horizontal=True)]
+
     text = st.text_input(t["wm_text"])
     logo = st.file_uploader(t["wm_logo"], type=["png"])
-
     c1, c2, c3 = st.columns(3)
     pos = c1.selectbox(t["wm_position"], list(POSITIONS.keys()), index=4)
     opacity = c2.slider(t["wm_opacity"], 10, 100, 50)
     size = c3.slider(t["wm_size"], 5, 50, 20)
+    logo_img = Image.open(logo).convert("RGBA") if logo else None
 
+    if batch == "batch":
+        files = st.file_uploader(t["batch_files_upload"], type=["png", "jpg", "jpeg", "webp"],
+                                 accept_multiple_files=True)
+        if not files or not st.button("💧 " + t["wm_apply"]):
+            return
+        if not text.strip() and logo_img is None:
+            st.warning(t["wm_empty"])
+            return
+        zip_buf = io.BytesIO()
+        with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+            for i, f in enumerate(files):
+                try:
+                    base = Image.open(f).convert("RGBA")
+                except Exception:
+                    continue
+                stem = f.name.rsplit(".", 1)[0] or f"image_{i + 1}"
+                zf.writestr(f"{stem}.png", _apply(base, text, logo_img, pos, opacity, size))
+        st.success(f"{t['batch_done']}: {len(files)}")
+        st.download_button("⬇️ " + t["batch_zip"], zip_buf.getvalue(), file_name="watermarked.zip", mime="application/zip")
+        return
+
+    up = st.file_uploader(t["wm_upload"], type=["png", "jpg", "jpeg", "webp"])
     if not st.button("💧 " + t["wm_apply"]):
         return
-    if not up or (not text.strip() and not logo):
+    if not up or (not text.strip() and logo_img is None):
         st.warning(t["wm_empty"])
         return
+    data = _apply(Image.open(up).convert("RGBA"), text, logo_img, pos, opacity, size)
+    st.image(data, use_container_width=True)
+    st.download_button("⬇️ " + t["wm_download"], data, file_name="watermarked.png", mime="image/png")
 
-    base = Image.open(up).convert("RGBA")
+
+def _apply(base, text, logo_img, pos, opacity, size):
     W, H = base.size
     overlay = Image.new("RGBA", base.size, (0, 0, 0, 0))
     fx, fy = POSITIONS[pos]
     margin = int(min(W, H) * 0.03)
-
-    if logo:
-        lg = Image.open(logo).convert("RGBA")
+    if logo_img is not None:
+        lg = logo_img.copy()
         target_w = max(1, int(W * size / 100))
         ratio = target_w / lg.width
         lg = lg.resize((target_w, max(1, int(lg.height * ratio))), Image.LANCZOS)
@@ -68,12 +96,9 @@ def run(lang):
         draw = ImageDraw.Draw(overlay)
         font = _font(max(12, int(H * size / 100)))
         bbox = draw.textbbox((0, 0), text, font=font)
-        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-        x, y = _anchor((W, H), (tw, th), fx, fy, margin)
+        x, y = _anchor((W, H), (bbox[2] - bbox[0], bbox[3] - bbox[1]), fx, fy, margin)
         draw.text((x - bbox[0], y - bbox[1]), text, font=font, fill=(255, 255, 255, int(255 * opacity / 100)))
-
     out = Image.alpha_composite(base, overlay).convert("RGB")
     buf = io.BytesIO()
     out.save(buf, "PNG")
-    st.image(buf.getvalue(), use_container_width=True)
-    st.download_button("⬇️ " + t["wm_download"], buf.getvalue(), file_name="watermarked.png", mime="image/png")
+    return buf.getvalue()

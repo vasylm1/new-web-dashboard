@@ -60,6 +60,13 @@ def run(lang):
     t = translations.get(lang, translations["English"])
     st.title(t["imgresize_title"])
 
+    batch_map = {t["batch_single"]: "single", t["batch_multi"]: "batch"}
+    batch = batch_map[st.radio(t["batch_mode"], list(batch_map.keys()), horizontal=True)]
+
+    if batch == "batch":
+        _run_batch(t)
+        return
+
     uploaded = st.file_uploader(
         t["imgresize_upload"], type=["png", "jpg", "jpeg", "webp", "bmp", "tiff"]
     )
@@ -123,3 +130,31 @@ def run(lang):
             mime=f"image/{EXT[fmt].replace('jpg', 'jpeg')}",
             use_container_width=True,
         )
+
+
+def _run_batch(t):
+    files = st.file_uploader(
+        t["batch_files_upload"], type=["png", "jpg", "jpeg", "webp", "bmp", "tiff"],
+        accept_multiple_files=True,
+    )
+    fmt = st.selectbox(t["imgresize_format"], ["PNG", "JPEG", "WEBP"])
+    max_dim = st.slider(t["imgresize_max_dim"], 0, 4000, 0, step=50)
+    quality = st.slider(t["imgresize_quality"], 10, 100, 85, disabled=(fmt == "PNG"))
+
+    if not files or not st.button("⚙️ " + t["imgresize_process"]):
+        return
+
+    zip_buf = io.BytesIO()
+    with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        for i, f in enumerate(files):
+            try:
+                img = Image.open(f)
+                img.load()
+            except Exception:
+                continue
+            if max_dim > 0:
+                img.thumbnail((max_dim, max_dim), Image.LANCZOS)
+            stem = f.name.rsplit(".", 1)[0] or f"image_{i + 1}"
+            zf.writestr(f"{stem}.{EXT[fmt]}", _encode(img, fmt, quality))
+    st.success(f"{t['batch_done']}: {len(files)}")
+    st.download_button("⬇️ " + t["batch_zip"], zip_buf.getvalue(), file_name="images.zip", mime="application/zip")
