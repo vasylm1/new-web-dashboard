@@ -1747,3 +1747,15 @@ _GROUPS = {
 for _lang, _extra in _GROUPS.items():
     translations.setdefault(_lang, {}).update(_extra)
 
+
+# --- Currency converter modes ---
+_CUR_MODES = {
+    "English": {"cur_mode_one": "One to one", "cur_mode_all": "One to many"},
+    "Polski": {"cur_mode_one": "Jeden do jednego", "cur_mode_all": "Jeden do wielu"},
+    "Deutsch": {"cur_mode_one": "Eins zu eins", "cur_mode_all": "Eins zu vielen"},
+    "Українська": {"cur_mode_one": "Один до одного", "cur_mode_all": "Один до багатьох"},
+    "中文": {"cur_mode_one": "一对一", "cur_mode_all": "一对多"},
+}
+for _lang, _extra in _CUR_MODES.items():
+    translations.setdefault(_lang, {}).update(_extra)
+
