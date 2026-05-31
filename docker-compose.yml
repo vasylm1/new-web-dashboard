@@ -16,3 +16,13 @@ services:
       timeout: 5s
       retries: 3
       start_period: 40s
+    # Caps so a heavy tool (matplotlib, markitdown, PDF/image work) can't OOM the
+    # host. `mem_limit`/`cpus` are honored by `docker compose up`; the `deploy`
+    # block covers Swarm/`docker stack`. Tune to your machine.
+    mem_limit: 1g
+    cpus: 1.5
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+          cpus: "1.5"

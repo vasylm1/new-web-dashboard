@@ -70,6 +70,7 @@ def run(lang):
 
     uploaded_file = st.file_uploader(t["md_upload"], type=all_extensions, help=t["md_help"])
     youtube_url = st.text_input(t["md_youtube"], placeholder=t["md_youtube_placeholder"], help=t["md_help_url"])
+    st.caption(t["net_warning"])  # YouTube URLs are sent to YouTube
 
     if st.button(t["md_convert"], use_container_width=True):
         if not uploaded_file and not youtube_url:

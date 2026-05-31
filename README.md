@@ -1,8 +1,11 @@
 # 🛠️ My Tools Hub
 
+[![CI](https://github.com/vasylm1/my-tools-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/vasylm1/my-tools-hub/actions/workflows/ci.yml)
+
 A small multilingual web app (Streamlit) bundling everyday utilities. Each tool lives
 in its own module under [`services/`](services/) and is auto-discovered by the app.
 
+**Repository:** <https://github.com/vasylm1/my-tools-hub>
 **Languages:** English · Polski · Deutsch · Українська · 中文
 
 ## Tools
@@ -54,9 +57,15 @@ in its own module under [`services/`](services/) and is auto-discovered by the a
 | Social banner | Generate a LinkedIn/X/Facebook/YouTube banner with name + tagline |
 | Certificate image | Create a certificate as a PNG image |
 
-## Run locally
+## Self-hosting
+
+**Requirements:** Python **3.11+** (CI runs 3.12; also tested on 3.14) — or just Docker.
+
+### Option A — Python / venv
 
 ```bash
+git clone https://github.com/vasylm1/my-tools-hub.git
+cd my-tools-hub
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
@@ -65,33 +74,41 @@ streamlit run main.py
 
 The app opens at <http://localhost:8501>.
 
-## Run with Docker
+### Option B — Docker (recommended)
 
 ```bash
+git clone https://github.com/vasylm1/my-tools-hub.git
+cd my-tools-hub
 docker compose up --build -d
 ```
 
 Then open <http://localhost:8501>. Stop it with `docker compose down`.
 
-The image installs **DejaVu fonts** so the PDF/image tools (certificates,
-watermarks, banners) render text correctly. For Chinese/Japanese/Korean text in
-**PDFs**, add `fonts-noto-cjk` to the `apt-get install` line in the
-[`Dockerfile`](Dockerfile).
+The image installs **DejaVu fonts** for the PDF/image tools. For Chinese/Japanese/
+Korean text in **PDFs**, add `fonts-noto-cjk` to the `apt-get install` line in the
+[`Dockerfile`](Dockerfile). To change the host port, edit the `ports` mapping in
+[`docker-compose.yml`](docker-compose.yml) (e.g. `"80:8501"`).
 
-To run behind a reverse proxy (Nginx/Caddy/Traefik), forward to the container's
-port `8501` and terminate TLS at the proxy. To change the host port, edit the
-`ports` mapping in [`docker-compose.yml`](docker-compose.yml), e.g. `"80:8501"`.
+> **TLS, security headers, rate limiting** — only relevant when **self-hosting**.
+> Put the container behind a reverse proxy (Nginx/Traefik) that terminates
+> HTTPS, adds HSTS/CSP, and rate-limits. Not needed on Streamlit Community Cloud,
+> which serves HTTPS for you.
 
-## Deployment
+### Streamlit Community Cloud
 
-Production settings live in [`.streamlit/config.toml`](.streamlit/config.toml):
+Point Community Cloud at this repo and `main.py`. It serves HTTPS automatically.
+You can't add a reverse proxy or set memory limits there — the platform manages the
+runtime (≈1 GB RAM). [`.streamlit/config.toml`](.streamlit/config.toml) still applies:
 
-- Streamlit usage telemetry is **disabled** (`gatherUsageStats = false`).
-- Upload size is capped (`maxUploadSize = 50` MB).
-- Python tracebacks are hidden from end users (`showErrorDetails = false`).
+- Streamlit usage telemetry **disabled** (`gatherUsageStats = false`).
+- Upload size capped (`maxUploadSize = 50` MB).
+- Tracebacks hidden from users (`showErrorDetails = false`).
 
-Deploy on any container/PaaS host. For an EU audience, choose an EU region and
-serve over HTTPS (most platforms terminate TLS for you).
+### Monitoring
+
+The container exposes Streamlit's health endpoint at `/_stcore/health`. Point an
+uptime monitor (e.g. UptimeRobot, Better Uptime) at
+`https://<your-app>/_stcore/health` for downtime alerts.
 
 ## Privacy (GDPR)
 

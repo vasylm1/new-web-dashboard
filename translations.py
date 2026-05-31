@@ -1768,3 +1768,92 @@ _FILTER = {
 for _lang, _extra in _FILTER.items():
     translations.setdefault(_lang, {}).update(_extra)
 
+
+# --- Network-tool warning ---
+_NET = {
+    "English": {"net_warning": "⚠️ This sends your input to an external service — don't enter sensitive personal data."},
+    "Polski": {"net_warning": "⚠️ To wysyła dane do usługi zewnętrznej — nie wprowadzaj wrażliwych danych osobowych."},
+    "Deutsch": {"net_warning": "⚠️ Dies sendet Ihre Eingabe an einen externen Dienst — keine sensiblen personenbezogenen Daten eingeben."},
+    "Українська": {"net_warning": "⚠️ Це надсилає ваші дані до зовнішнього сервісу — не вводьте конфіденційні персональні дані."},
+    "中文": {"net_warning": "⚠️ 这会将你的输入发送至外部服务——请勿输入敏感个人数据。"},
+}
+for _lang, _extra in _NET.items():
+    translations.setdefault(_lang, {}).update(_extra)
+
+
+# --- Imprint + GDPR privacy-policy sections ---
+_LEGAL = {
+    "English": {
+        "nav_imprint": "Imprint", "imprint_title": "Imprint / Legal Notice",
+        "imprint_intro": "Information pursuant to applicable law (incl. § 5 DDG, Germany).",
+        "imprint_responsible_label": "Responsible for content", "imprint_contact_label": "Contact",
+        "imprint_disclaimer_title": "Disclaimer",
+        "imprint_disclaimer_text": "This app is provided “as is”, without warranty. Despite careful review we accept no liability for the content of external links — their operators are solely responsible. Results produced by the tools are provided without guarantee.",
+        "privacy_controller_title": "Data controller", "privacy_legal_title": "Legal basis",
+        "privacy_legal_text": "Processing is based on our legitimate interest (Art. 6(1)(f) GDPR) in providing the tool you request. Entering personal data is never required; if you do, you provide it voluntarily.",
+        "privacy_thirdparties_title": "Third-party services",
+        "privacy_thirdparties_text": "Only when you use a specific tool is data sent out: Google Text-to-Speech (PDF → MP3), YouTube (YouTube → Markdown) and open.er-api.com (currency rates). These providers may process data outside the EU/EEA (e.g. the USA).",
+        "privacy_rights_title": "Your rights",
+        "privacy_rights_text": "You have the right to access, rectification, erasure, restriction, objection and data portability, and to lodge a complaint with a supervisory authority. As the app keeps nothing after your session, there is normally no stored data to act on.",
+        "privacy_contact_title": "Contact",
+    },
+    "Polski": {
+        "nav_imprint": "Nota prawna", "imprint_title": "Nota prawna / Impressum",
+        "imprint_intro": "Informacje zgodnie z obowiązującym prawem (m.in. § 5 DDG, Niemcy).",
+        "imprint_responsible_label": "Odpowiedzialny za treść", "imprint_contact_label": "Kontakt",
+        "imprint_disclaimer_title": "Zastrzeżenie",
+        "imprint_disclaimer_text": "Aplikacja udostępniana jest „taka, jaka jest”, bez gwarancji. Mimo starannej weryfikacji nie ponosimy odpowiedzialności za treść zewnętrznych odnośników — odpowiadają za nie wyłącznie ich operatorzy. Wyniki działania narzędzi nie są objęte gwarancją.",
+        "privacy_controller_title": "Administrator danych", "privacy_legal_title": "Podstawa prawna",
+        "privacy_legal_text": "Przetwarzanie odbywa się na podstawie naszego prawnie uzasadnionego interesu (art. 6 ust. 1 lit. f RODO) w udostępnianiu żądanego narzędzia. Podanie danych osobowych nigdy nie jest wymagane; jeśli to robisz, podajesz je dobrowolnie.",
+        "privacy_thirdparties_title": "Usługi zewnętrzne",
+        "privacy_thirdparties_text": "Dane są wysyłane na zewnątrz tylko podczas korzystania z konkretnego narzędzia: Google Text-to-Speech (PDF → MP3), YouTube (YouTube → Markdown) oraz open.er-api.com (kursy walut). Dostawcy ci mogą przetwarzać dane poza UE/EOG (np. w USA).",
+        "privacy_rights_title": "Twoje prawa",
+        "privacy_rights_text": "Masz prawo do dostępu, sprostowania, usunięcia, ograniczenia, sprzeciwu i przenoszenia danych oraz do wniesienia skargi do organu nadzorczego. Ponieważ aplikacja nie przechowuje danych po zakończeniu sesji, zwykle nie ma zapisanych danych, których to dotyczy.",
+        "privacy_contact_title": "Kontakt",
+    },
+    "Deutsch": {
+        "nav_imprint": "Impressum", "imprint_title": "Impressum",
+        "imprint_intro": "Angaben gemäß § 5 DDG.",
+        "imprint_responsible_label": "Verantwortlich für den Inhalt", "imprint_contact_label": "Kontakt",
+        "imprint_disclaimer_title": "Haftungsausschluss",
+        "imprint_disclaimer_text": "Diese App wird „wie besehen“ ohne Gewähr bereitgestellt. Trotz sorgfältiger Prüfung übernehmen wir keine Haftung für die Inhalte externer Links — für diese sind ausschließlich deren Betreiber verantwortlich. Für die Ergebnisse der Tools wird keine Gewähr übernommen.",
+        "privacy_controller_title": "Verantwortlicher", "privacy_legal_title": "Rechtsgrundlage",
+        "privacy_legal_text": "Die Verarbeitung erfolgt auf Grundlage unseres berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO), das angeforderte Tool bereitzustellen. Die Eingabe personenbezogener Daten ist nie erforderlich; wenn Sie es tun, geschieht dies freiwillig.",
+        "privacy_thirdparties_title": "Drittanbieter",
+        "privacy_thirdparties_text": "Nur bei Nutzung eines bestimmten Tools werden Daten gesendet: Google Text-to-Speech (PDF → MP3), YouTube (YouTube → Markdown) und open.er-api.com (Wechselkurse). Diese Anbieter können Daten außerhalb der EU/des EWR verarbeiten (z. B. in den USA).",
+        "privacy_rights_title": "Ihre Rechte",
+        "privacy_rights_text": "Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung, Widerspruch und Datenübertragbarkeit sowie auf Beschwerde bei einer Aufsichtsbehörde. Da die App nach Ihrer Sitzung nichts speichert, liegen in der Regel keine gespeicherten Daten vor.",
+        "privacy_contact_title": "Kontakt",
+    },
+    "Українська": {
+        "nav_imprint": "Юридична інформація", "imprint_title": "Юридична інформація / Impressum",
+        "imprint_intro": "Інформація згідно з чинним законодавством (зокрема § 5 DDG, Німеччина).",
+        "imprint_responsible_label": "Відповідальний за зміст", "imprint_contact_label": "Контакти",
+        "imprint_disclaimer_title": "Відмова від відповідальності",
+        "imprint_disclaimer_text": "Застосунок надається «як є», без жодних гарантій. Попри ретельну перевірку, ми не несемо відповідальності за вміст зовнішніх посилань — за нього відповідають виключно їхні оператори. Результати роботи інструментів надаються без гарантії.",
+        "privacy_controller_title": "Контролер даних", "privacy_legal_title": "Правова підстава",
+        "privacy_legal_text": "Обробка здійснюється на підставі нашого законного інтересу (ст. 6(1)(f) GDPR) у наданні запитаного інструмента. Вводити персональні дані ніколи не обов’язково; якщо ви це робите, то добровільно.",
+        "privacy_thirdparties_title": "Сторонні сервіси",
+        "privacy_thirdparties_text": "Дані надсилаються назовні лише під час використання конкретного інструмента: Google Text-to-Speech (PDF → MP3), YouTube (YouTube → Markdown) та open.er-api.com (курси валют). Ці постачальники можуть обробляти дані за межами ЄС/ЄЕЗ (наприклад, у США).",
+        "privacy_rights_title": "Ваші права",
+        "privacy_rights_text": "Ви маєте право на доступ, виправлення, видалення, обмеження, заперечення та перенесення даних, а також на скаргу до наглядового органу. Оскільки застосунок нічого не зберігає після сесії, зазвичай немає збережених даних.",
+        "privacy_contact_title": "Контакти",
+    },
+    "中文": {
+        "nav_imprint": "法律声明", "imprint_title": "法律声明 / Impressum",
+        "imprint_intro": "依据适用法律（含德国《数字服务法》§5）提供的信息。",
+        "imprint_responsible_label": "内容负责人", "imprint_contact_label": "联系方式",
+        "imprint_disclaimer_title": "免责声明",
+        "imprint_disclaimer_text": "本应用按“现状”提供，不作任何担保。尽管已审慎核查，我们对外部链接的内容不承担责任——其运营者负全部责任。工具生成的结果不作保证。",
+        "privacy_controller_title": "数据控制者", "privacy_legal_title": "法律依据",
+        "privacy_legal_text": "处理基于我们提供所请求工具的合法利益（GDPR 第 6(1)(f) 条）。从不要求你输入个人数据；如你输入，则属自愿提供。",
+        "privacy_thirdparties_title": "第三方服务",
+        "privacy_thirdparties_text": "仅在你使用特定工具时才会发送数据：Google 文字转语音（PDF → MP3）、YouTube（YouTube → Markdown）以及 open.er-api.com（汇率）。这些提供商可能在欧盟/欧洲经济区以外（如美国）处理数据。",
+        "privacy_rights_title": "你的权利",
+        "privacy_rights_text": "你有权访问、更正、删除、限制、反对和携带数据，并可向监管机构投诉。由于本应用在会话结束后不保留任何数据，通常没有可处理的存储数据。",
+        "privacy_contact_title": "联系方式",
+    },
+}
+for _lang, _extra in _LEGAL.items():
+    translations.setdefault(_lang, {}).update(_extra)
+

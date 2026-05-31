@@ -6,7 +6,9 @@ import importlib.util
 from collections import defaultdict
 from urllib.parse import quote
 from translations import translations
-from views import about, privacy
+from views import about, privacy, imprint
+
+REPO_URL = "https://github.com/vasylm1/my-tools-hub"
 
 # Accent color per category (used for the card left-border).
 CAT_COLORS = {
@@ -178,12 +180,13 @@ h1 { font-weight:800; }
 # 🌍 Language selector — shared across every page
 languages = list(translations.keys())
 lang = st.sidebar.selectbox("🌍 Language", languages, index=0)
+st.sidebar.markdown(f"<a href='{REPO_URL}' target='_blank' style='font-size:.85rem;color:#64748b;text-decoration:none;'>↗ GitHub</a>", unsafe_allow_html=True)
 # Merge over English so any key missing in the selected language never crashes.
 t = {**translations.get("English", {}), **translations.get(lang, {})}
 
 # Safe defaults for this file's own UI strings (resilient to a partial deploy).
 _UI_DEFAULTS = {
-    "nav_tools": "Tools", "nav_about": "About", "nav_privacy": "Privacy",
+    "nav_tools": "Tools", "nav_about": "About", "nav_privacy": "Privacy", "nav_imprint": "Imprint",
     "back_to_tools": "All tools", "tools_tagline": "Your toolkit for everyday tasks",
     "tools_word": "tools", "tools_search": "Search tools…", "tools_none": "No tools match your search.",
     "cat_marketing": "Marketing", "cat_data": "Data", "cat_files": "Files",
@@ -318,5 +321,6 @@ pages = [
     st.Page(tools_page, title=ui("nav_tools"), icon="🧰", default=True),
     st.Page(lambda: about.render(t), title=ui("nav_about"), icon="👤", url_path="about"),
     st.Page(lambda: privacy.render(t), title=ui("nav_privacy"), icon="🔒", url_path="privacy"),
+    st.Page(lambda: imprint.render(t), title=ui("nav_imprint"), icon="⚖️", url_path="imprint"),
 ]
 st.navigation(pages).run()

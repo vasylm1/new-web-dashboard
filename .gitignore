@@ -10,6 +10,9 @@ env/
 .DS_Store
 Thumbs.db
 
+# Local runtime logs
+logs/
+
 # Streamlit
 .streamlit/secrets.toml
 

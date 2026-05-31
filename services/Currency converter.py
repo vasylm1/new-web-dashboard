@@ -31,6 +31,7 @@ def _fmt(value):
 def run(lang):
     t = translations.get(lang, translations["English"])
     st.title(t["cur_title"])
+    st.caption(t["net_warning"])  # currency codes are sent to open.er-api.com
 
     mode_map = {t["cur_mode_one"]: "one", t["cur_mode_all"]: "all"}
     mode = mode_map[st.radio(t["batch_mode"], list(mode_map.keys()), horizontal=True)]

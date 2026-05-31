@@ -71,6 +71,7 @@ def run(lang):
         lang_code = st.selectbox(
             t["fileconv_language"], ["en", "pl", "uk", "de", "es", "fr", "zh-cn"]
         )
+        st.caption(t["net_warning"])  # PDF text is sent to Google TTS
 
     if not (uploaded_file and st.button(t["fileconv_convert_button"])):
         return
