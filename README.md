@@ -65,6 +65,23 @@ streamlit run main.py
 
 The app opens at <http://localhost:8501>.
 
+## Run with Docker
+
+```bash
+docker compose up --build -d
+```
+
+Then open <http://localhost:8501>. Stop it with `docker compose down`.
+
+The image installs **DejaVu fonts** so the PDF/image tools (certificates,
+watermarks, banners) render text correctly. For Chinese/Japanese/Korean text in
+**PDFs**, add `fonts-noto-cjk` to the `apt-get install` line in the
+[`Dockerfile`](Dockerfile).
+
+To run behind a reverse proxy (Nginx/Caddy/Traefik), forward to the container's
+port `8501` and terminate TLS at the proxy. To change the host port, edit the
+`ports` mapping in [`docker-compose.yml`](docker-compose.yml), e.g. `"80:8501"`.
+
 ## Deployment
 
 Production settings live in [`.streamlit/config.toml`](.streamlit/config.toml):
