@@ -1,0 +1,33 @@
+# Core app
+streamlit>=1.40,<2.0
+
+# Data / spreadsheets
+pandas>=2.2,<3.0
+openpyxl>=3.1,<4.0
+XlsxWriter>=3.2,<4.0
+
+# QR codes & images
+qrcode>=8.0,<9.0
+pillow>=11.0,<12.0
+
+# Document conversion
+# Only the extras the MD tool actually uses (drops heavy audio/Azure extras
+# from [all] to fit Streamlit Community Cloud's 1 GB free tier).
+markitdown[docx,pptx,xlsx,xls,pdf,youtube-transcription]>=0.1,<0.2
+PyPDF2==3.0.1
+# Markdown -> HTML tool
+markdown>=3.5,<4.0
+# HTML -> Markdown tool
+markdownify>=0.13,<1.0
+
+# Charts, SQL formatting, sample data
+matplotlib>=3.8,<4.0
+sqlparse>=0.5,<0.6
+Faker>=24,<40
+
+# PDF documents (resume, certificate, labels, watermark) and EPUB
+fpdf2>=2.7,<3.0
+EbookLib>=0.18,<1.0
+
+# Text-to-speech (PDF -> MP3)
+gTTS>=2.5,<3.0
