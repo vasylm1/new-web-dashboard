@@ -187,7 +187,7 @@ _UI_DEFAULTS = {
     "back_to_tools": "All tools", "tools_tagline": "Your toolkit for everyday tasks",
     "tools_word": "tools", "tools_search": "Search tools…", "tools_none": "No tools match your search.",
     "cat_marketing": "Marketing", "cat_data": "Data", "cat_files": "Files",
-    "cat_images": "Images", "cat_other": "Other",
+    "cat_images": "Images", "cat_other": "Other", "cat_all": "All",
     "group_pdf": "PDF Tools", "group_md": "Markdown ↔ HTML",
     "group_cert": "Certificate Maker", "group_mockup": "Mockups",
 }
@@ -248,13 +248,30 @@ def tools_page():
         _run_tool(by_id[active])
         return
 
-    # Landing: hero + search + grid grouped by category.
+    # Landing: hero + search + category filter + grid.
     st.markdown(
         f'<div class="hero"><h1>My Tools Hub</h1>'
         f'<p>{html.escape(ui("tools_tagline"))} · {len(by_id)} {html.escape(ui("tools_word"))}</p></div>',
         unsafe_allow_html=True,
     )
+
+    # Categories that actually contain tools (for the filter).
+    present = {cat for cat, _, _ in TOOL_GROUPS.values()}
+    for fid, fname in by_id.items():
+        if fname not in GROUPED_FILES:
+            present.add(TOOL_REGISTRY.get(fid, ("cat_other", None))[0])
+    ordered = [c for c in CATEGORY_ORDER if c in present] + [c for c in present if c not in CATEGORY_ORDER]
+
     query = st.text_input("search", placeholder="🔍  " + ui("tools_search"), label_visibility="collapsed").strip().lower()
+    all_label = ui("cat_all")
+    label_to_cat = {_noemoji(ui(c)): c for c in ordered}
+    options = [all_label] + list(label_to_cat.keys())
+    seg = getattr(st, "segmented_control", None)
+    if seg is not None:
+        chosen = seg("filter", options, default=all_label, label_visibility="collapsed")
+    else:
+        chosen = st.radio("filter", options, horizontal=True, label_visibility="collapsed")
+    sel_cat = label_to_cat.get(chosen) if (chosen and chosen != all_label) else None
 
     # Entries per category: (label, href_id). Groups first, then ungrouped tools.
     by_cat = defaultdict(list)
@@ -274,6 +291,8 @@ def tools_page():
         by_cat[cat_key].append((label, fid))
 
     categories = [c for c in CATEGORY_ORDER if c in by_cat] + [c for c in by_cat if c not in CATEGORY_ORDER]
+    if sel_cat is not None:
+        categories = [c for c in categories if c == sel_cat]
     if not categories:
         st.info(ui("tools_none"))
         return

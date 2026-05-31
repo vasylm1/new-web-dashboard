@@ -1759,3 +1759,12 @@ _CUR_MODES = {
 for _lang, _extra in _CUR_MODES.items():
     translations.setdefault(_lang, {}).update(_extra)
 
+
+# --- "All" label for the category filter ---
+_FILTER = {
+    "English": {"cat_all": "All"}, "Polski": {"cat_all": "Wszystkie"},
+    "Deutsch": {"cat_all": "Alle"}, "Українська": {"cat_all": "Усі"}, "中文": {"cat_all": "全部"},
+}
+for _lang, _extra in _FILTER.items():
+    translations.setdefault(_lang, {}).update(_extra)
+

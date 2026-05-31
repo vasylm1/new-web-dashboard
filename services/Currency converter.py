@@ -35,11 +35,13 @@ def run(lang):
     mode_map = {t["cur_mode_one"]: "one", t["cur_mode_all"]: "all"}
     mode = mode_map[st.radio(t["batch_mode"], list(mode_map.keys()), horizontal=True)]
 
+    left, right = st.columns([1, 1], gap="large")
+
     if mode == "one":
-        amount = st.number_input(t["cur_amount"], value=100.0, min_value=0.0)
-        c1, c2 = st.columns(2)
-        frm = c1.selectbox(t["cur_from"], CURRENCIES, index=1)
-        to = c2.selectbox(t["cur_to"], CURRENCIES, index=2)
+        with left:
+            amount = st.number_input(t["cur_amount"], value=100.0, min_value=0.0)
+            frm = st.selectbox(t["cur_from"], CURRENCIES, index=1)
+            to = st.selectbox(t["cur_to"], CURRENCIES, index=2)
         try:
             rate = _rates(frm).get(to)
         except Exception:
@@ -48,22 +50,22 @@ def run(lang):
         if rate is None:
             st.error(t["cur_error"])
             return
-        st.metric(t["cur_result"], f"{amount * rate:,.2f} {to}")
-        st.caption(f"{t['cur_rate']}: 1 {frm} = {rate:.4f} {to}")
+        with right:
+            st.metric(t["cur_result"], f"{amount * rate:,.2f} {to}")
+            st.caption(f"{t['cur_rate']}: 1 {frm} = {rate:.4f} {to}")
         st.caption(t["cur_note"])
         return
 
     # One-to-many: base amount converted into every other currency.
-    c1, c2 = st.columns([1, 1])
-    amount = c1.number_input(t["cur_amount"], value=1.0, min_value=0.0)
-    base = c2.selectbox(t["cur_from"], CURRENCIES, index=2)
+    with left:
+        amount = st.number_input(t["cur_amount"], value=1.0, min_value=0.0)
+        base = st.selectbox(t["cur_from"], CURRENCIES, index=2)
     try:
         rates = _rates(base)
     except Exception:
         st.error(t["cur_error"])
         return
 
-    st.caption(f"{amount:,.2f} {base} =")
     rows = ""
     for code in CURRENCIES:
         if code == base or code not in rates:
@@ -75,8 +77,10 @@ def run(lang):
             f'<span style="font-weight:600;color:#0f172a;">{code}</span>'
             f'<span style="color:#334155;">{_fmt(value)} {SYMBOLS.get(code, "")}</span></div>'
         )
-    st.markdown(
-        f'<div style="background:#fff;border:1px solid #e9edf4;border-radius:14px;overflow:hidden;max-width:420px;">{rows}</div>',
-        unsafe_allow_html=True,
-    )
+    with right:
+        st.caption(f"{amount:,.2f} {base} =")
+        st.markdown(
+            f'<div style="background:#fff;border:1px solid #e9edf4;border-radius:14px;overflow:hidden;">{rows}</div>',
+            unsafe_allow_html=True,
+        )
     st.caption(t["cur_note"])
