@@ -44,13 +44,13 @@ def generate_ics(df):
     ]
     dtstamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     for _, row in df.iterrows():
-        start = format_date(row[0])
-        end = format_date(row[1])
+        start = format_date(row.iloc[0])
+        end = format_date(row.iloc[1])
         if not start or not end:
             continue  # skip rows without a valid time range
-        title = row[2] if pd.notna(row[2]) else "Event"
-        description = row[3] if pd.notna(row[3]) else ""
-        location = row[4] if pd.notna(row[4]) else ""
+        title = row.iloc[2] if pd.notna(row.iloc[2]) else "Event"
+        description = row.iloc[3] if pd.notna(row.iloc[3]) else ""
+        location = row.iloc[4] if pd.notna(row.iloc[4]) else ""
         lines.append("BEGIN:VEVENT")
         lines.append(f"UID:{uuid.uuid4()}@my-tools-hub")
         lines.append(f"DTSTAMP:{dtstamp}")
