@@ -1730,3 +1730,20 @@ _LANDING = {
 for _lang, _extra in _LANDING.items():
     translations.setdefault(_lang, {}).update(_extra)
 
+
+# --- Tool group titles ---
+_GROUPS = {
+    "English": {"group_pdf": "PDF Tools", "group_md": "Markdown ↔ HTML",
+                "group_cert": "Certificate Maker", "group_mockup": "Mockups"},
+    "Polski": {"group_pdf": "Narzędzia PDF", "group_md": "Markdown ↔ HTML",
+               "group_cert": "Kreator certyfikatów", "group_mockup": "Makiety"},
+    "Deutsch": {"group_pdf": "PDF-Werkzeuge", "group_md": "Markdown ↔ HTML",
+                "group_cert": "Zertifikat-Ersteller", "group_mockup": "Mockups"},
+    "Українська": {"group_pdf": "Інструменти PDF", "group_md": "Markdown ↔ HTML",
+                   "group_cert": "Конструктор сертифікатів", "group_mockup": "Макети"},
+    "中文": {"group_pdf": "PDF 工具", "group_md": "Markdown ↔ HTML",
+             "group_cert": "证书制作", "group_mockup": "样机"},
+}
+for _lang, _extra in _GROUPS.items():
+    translations.setdefault(_lang, {}).update(_extra)
+

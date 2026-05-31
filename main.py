@@ -69,6 +69,16 @@ TOOL_REGISTRY = {
 }
 CATEGORY_ORDER = ["cat_marketing", "cat_data", "cat_files", "cat_images", "cat_other"]
 
+# Tool groups: one card opens a page that switches between the member tools.
+# id -> (category, group-title key, [member service filenames])
+TOOL_GROUPS = {
+    "pdf": ("cat_files", "group_pdf", ["PDF to text.py", "PDF watermark.py", "Images to PDF.py"]),
+    "md": ("cat_files", "group_md", ["Markdown to HTML.py", "HTML to Markdown.py"]),
+    "cert": ("cat_files", "group_cert", ["Certificate generator.py", "Certificate image.py"]),
+    "mockup": ("cat_images", "group_mockup", ["Screenshot beautifier.py", "Browser mockup.py", "Device mockup.py"]),
+}
+GROUPED_FILES = {f for _, _, members in TOOL_GROUPS.values() for f in members}
+
 # 🛠 Page configuration
 st.set_page_config(page_title="My Tools Hub", page_icon="🛠️", layout="wide")
 
@@ -156,6 +166,8 @@ h1 { font-weight:800; }
 .tc-name { color:var(--ink); font-weight:650; font-size:.98rem; line-height:1.22; }
 /* Kill Streamlit's link underline/colour inside cards */
 .tool-card, .tool-card:hover, .tool-card *, .tc-name, .tc-badge { text-decoration:none !important; }
+.tc-group .tc-name { flex:1; }
+.tc-group::after { content:"›"; color:#cbd5e1; font-size:1.5rem; line-height:1; padding-left:6px; }
 
 .back-link { display:inline-block; margin-bottom:10px; color:var(--primary);
   text-decoration:none !important; font-weight:600; }
@@ -176,6 +188,8 @@ _UI_DEFAULTS = {
     "tools_word": "tools", "tools_search": "Search tools…", "tools_none": "No tools match your search.",
     "cat_marketing": "Marketing", "cat_data": "Data", "cat_files": "Files",
     "cat_images": "Images", "cat_other": "Other",
+    "group_pdf": "PDF Tools", "group_md": "Markdown ↔ HTML",
+    "group_cert": "Certificate Maker", "group_mockup": "Mockups",
 }
 
 
@@ -193,14 +207,41 @@ def _run_tool(filename):
         tool_module.run(lang)
 
 
+def _member_label(fname):
+    _, title_key = TOOL_REGISTRY.get(fname[:-3], ("cat_other", None))
+    return t.get(title_key, fname[:-3]) if title_key else fname[:-3]
+
+
+def _run_group(gid):
+    """Render a group page: a switcher across member tools; run the chosen one."""
+    _, _, members = TOOL_GROUPS[gid]
+    label_to_file = {_member_label(f): f for f in members}
+    labels = list(label_to_file.keys())
+    st.markdown(f"### {html.escape(ui('group_' + gid))}")
+    seg = getattr(st, "segmented_control", None)
+    if seg is not None:
+        choice = seg("tools", labels, default=labels[0], label_visibility="collapsed")
+    else:
+        choice = st.radio("tools", labels, horizontal=True, label_visibility="collapsed")
+    choice = choice or labels[0]
+    st.divider()
+    _run_tool(label_to_file[choice])
+
+
 def tools_page():
-    """Searchable card grid: pick a tool to open it (?tool=<file id>)."""
+    """Searchable card grid: pick a tool or group to open it (?tool=<id>)."""
     services_dir = os.path.join(os.path.dirname(__file__), "services")
     os.makedirs(services_dir, exist_ok=True)
     by_id = {f[:-3]: f for f in sorted(os.listdir(services_dir)) if f.endswith(".py")}
 
-    # An open tool: show a back link, then run it.
     active = st.query_params.get("tool")
+    # A group page
+    if active and active.startswith("group:") and active[6:] in TOOL_GROUPS:
+        st.markdown(f'<a class="back-link" href="?" target="_self">← {html.escape(ui("back_to_tools"))}</a>',
+                    unsafe_allow_html=True)
+        _run_group(active[6:])
+        return
+    # A single tool
     if active in by_id:
         st.markdown(f'<a class="back-link" href="?" target="_self">← {html.escape(ui("back_to_tools"))}</a>',
                     unsafe_allow_html=True)
@@ -215,15 +256,24 @@ def tools_page():
     )
     query = st.text_input("search", placeholder="🔍  " + ui("tools_search"), label_visibility="collapsed").strip().lower()
 
-    groups = defaultdict(list)
+    # Entries per category: (label, href_id). Groups first, then ungrouped tools.
+    by_cat = defaultdict(list)
+    for gid, (cat_key, _, members) in TOOL_GROUPS.items():
+        label = ui("group_" + gid)
+        haystack = (label + " " + " ".join(_member_label(m) for m in members)).lower()
+        if query and query not in haystack:
+            continue
+        by_cat[cat_key].append((label, "group:" + gid))
     for fid, fname in by_id.items():
+        if fname in GROUPED_FILES:
+            continue
         cat_key, title_key = TOOL_REGISTRY.get(fid, ("cat_other", None))
         label = t.get(title_key, fid) if title_key else fid
         if query and query not in label.lower():
             continue
-        groups[cat_key].append((label, fid))
+        by_cat[cat_key].append((label, fid))
 
-    categories = [c for c in CATEGORY_ORDER if c in groups] + [c for c in groups if c not in CATEGORY_ORDER]
+    categories = [c for c in CATEGORY_ORDER if c in by_cat] + [c for c in by_cat if c not in CATEGORY_ORDER]
     if not categories:
         st.info(ui("tools_none"))
         return
@@ -232,10 +282,11 @@ def tools_page():
         color = CAT_COLORS.get(cat, "#4f46e5")
         cat_label = html.escape(_noemoji(ui(cat)))
         cards = ""
-        for label, fid in sorted(groups[cat]):
+        for label, href_id in sorted(by_cat[cat]):
             badge = html.escape((label.strip()[:1] or "•").upper())
+            grp = " tc-group" if href_id.startswith("group:") else ""
             cards += (
-                f'<a class="tool-card" style="--cat:{color}" href="?tool={quote(fid)}" target="_self">'
+                f'<a class="tool-card{grp}" style="--cat:{color}" href="?tool={quote(href_id)}" target="_self">'
                 f'<span class="tc-badge">{badge}</span>'
                 f'<span class="tc-name">{html.escape(label)}</span></a>'
             )
