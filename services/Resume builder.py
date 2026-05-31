@@ -50,7 +50,8 @@ def run(lang):
         pdf.set_font(fam, "", 11)
         for line in text.splitlines():
             if line.strip():
-                pdf.multi_cell(0, 6, (f"•  {line.strip()}" if bullets else line.strip()))
+                pdf.multi_cell(0, 6, (f"•  {line.strip()}" if bullets else line.strip()),
+                               new_x="LMARGIN", new_y="NEXT")
         pdf.ln(3)
 
     section(t["cv_summary"], summary)
