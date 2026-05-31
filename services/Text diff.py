@@ -13,7 +13,7 @@ def run(lang):
     left = c1.text_area(t["diff_left"], height=240)
     right = c2.text_area(t["diff_right"], height=240)
 
-    if not st.button("🔍 " + t["diff_compare"]):
+    if not left.strip() and not right.strip():
         return
 
     a, b = left.splitlines(), right.splitlines()

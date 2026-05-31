@@ -21,10 +21,8 @@ def run(lang):
 
     src = st.text_area(t["md2html_input"], height=260, placeholder="# Hello\n\nSome **markdown**...")
 
-    if not st.button("➡️ " + t["md2html_convert"]):
-        return
     if not src.strip():
-        st.warning(t["md2html_empty"])
+        st.info(t["md2html_empty"])
         return
 
     body = md.markdown(src, extensions=["extra", "tables", "fenced_code", "sane_lists"])

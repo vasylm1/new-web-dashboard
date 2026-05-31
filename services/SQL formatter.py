@@ -10,10 +10,8 @@ def run(lang):
     raw = st.text_area(t["sql_input"], height=240, placeholder="select id,name from users where age>18 order by name")
     upper = st.checkbox(t["sql_keywords_upper"], value=True)
 
-    if not st.button("✨ " + t["sql_format"]):
-        return
     if not raw.strip():
-        st.warning(t["sql_empty"])
+        st.info(t["sql_empty"])
         return
 
     formatted = sqlparse.format(

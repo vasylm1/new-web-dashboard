@@ -9,10 +9,8 @@ def run(lang):
 
     src = st.text_area(t["html2md_input"], height=240, placeholder="<h1>Title</h1><p>Some <b>HTML</b>...</p>")
 
-    if not st.button("➡️ " + t["html2md_convert"]):
-        return
     if not src.strip():
-        st.warning(t["html2md_empty"])
+        st.info(t["html2md_empty"])
         return
 
     markdown = mdify(src, heading_style="ATX").strip()

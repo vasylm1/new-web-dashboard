@@ -15,10 +15,8 @@ def run(lang):
     st.title(t["head_title"])
 
     headline = st.text_input(t["head_input"])
-    if not st.button("🔎 " + t["head_analyze"]):
-        return
     if not headline.strip():
-        st.warning(t["head_empty"])
+        st.info(t["head_empty"])
         return
 
     chars = len(headline)

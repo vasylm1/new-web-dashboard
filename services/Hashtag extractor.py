@@ -22,10 +22,8 @@ def run(lang):
     text = st.text_area(t["kw_input"], height=200)
     n = st.slider(t["kw_count"], 5, 30, 12)
 
-    if not st.button(t["kw_extract"]):
-        return
     if not text.strip():
-        st.warning(t["kw_empty"])
+        st.info(t["kw_empty"])
         return
 
     found = list(dict.fromkeys(re.findall(r"#(\w+)", text)))  # preserve order, unique

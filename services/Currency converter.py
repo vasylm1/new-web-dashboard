@@ -26,17 +26,16 @@ def run(lang):
     frm = c1.selectbox(t["cur_from"], CURRENCIES, index=1)
     to = c2.selectbox(t["cur_to"], CURRENCIES, index=2)
 
-    if st.button("💱 " + t["cur_convert"]):
-        try:
-            rates = _rates(frm)
-        except Exception:
-            st.error(t["cur_error"])
-            return
-        rate = rates.get(to)
-        if rate is None:
-            st.error(t["cur_error"])
-            return
-        st.metric(t["cur_result"], f"{amount * rate:,.2f} {to}")
-        st.caption(f"{t['cur_rate']}: 1 {frm} = {rate:.4f} {to}")
-
+    # Live: updates as you change amount or currencies (rates are cached).
+    try:
+        rates = _rates(frm)
+    except Exception:
+        st.error(t["cur_error"])
+        return
+    rate = rates.get(to)
+    if rate is None:
+        st.error(t["cur_error"])
+        return
+    st.metric(t["cur_result"], f"{amount * rate:,.2f} {to}")
+    st.caption(f"{t['cur_rate']}: 1 {frm} = {rate:.4f} {to}")
     st.caption(t["cur_note"])
