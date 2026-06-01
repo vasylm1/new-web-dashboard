@@ -42,6 +42,13 @@ Data leaves the app **only** when you use a specific tool:
 
 These providers may process data **outside the EU/EEA** (e.g. in the USA).
 
+## Hosting & international transfers
+
+The app is hosted on **Streamlit Community Cloud** (operated by Snowflake Inc.,
+**USA**). Request data and server logs — which may include **IP addresses**
+(personal data) — are therefore processed in the United States, so there is **no
+EU data residency**. This is a personal, non-commercial project.
+
 ## Retention
 
 None beyond your session — the app stores nothing after the result is returned.
