@@ -22,6 +22,7 @@ in its own module under [`services/`](services/) and is auto-discovered by the a
 | Hashtag extractor | Pull top keywords and suggested/found hashtags from a block of text |
 | Spreadsheet cleaner | Trim, dedupe, drop empty rows/cols, and standardize headers in CSV/Excel |
 | JSON formatter | Format, minify, validate JSON, or convert an array of objects to CSV |
+| Power Automate JSON checker | Highlight JSON syntax errors and validate common Power Automate flow structures |
 | Images to PDF | Combine multiple images into a single PDF (A4/Letter/fit, portrait/landscape) |
 | Markdown to HTML | Render Markdown to styled, self-contained HTML with preview and download |
 | Image watermark | Overlay text or a logo watermark on an image (position, opacity, size) |
@@ -38,6 +39,7 @@ in its own module under [`services/`](services/) and is auto-discovered by the a
 | Currency converter | Convert between currencies using live rates (open.er-api.com) |
 | PDF to text | Extract selectable text from a PDF |
 | HTML to Markdown | Convert pasted HTML into Markdown |
+| HTML viewer | Paste or upload HTML and preview it in an isolated responsive frame |
 | Text diff | Compare two texts and highlight added/removed lines |
 | Social cropper | Crop images to Instagram/Facebook/LinkedIn/X presets |
 | Meme generator | Add top/bottom captions to an image |

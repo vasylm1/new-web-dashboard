@@ -37,6 +37,7 @@ TOOL_REGISTRY = {
     "Excel to calendar": ("cat_data", "ical_title"),
     "Spreadsheet cleaner": ("cat_data", "clean_title"),
     "JSON formatter": ("cat_data", "json_title"),
+    "Power Automate JSON checker": ("cat_data", "paj_title"),
     "Chart maker": ("cat_data", "chart_title"),
     "Datetime toolkit": ("cat_data", "dt_title"),
     "Unit converter": ("cat_data", "unit_title"),
@@ -51,6 +52,7 @@ TOOL_REGISTRY = {
     "Markdown to HTML": ("cat_files", "md2html_title"),
     "PDF to text": ("cat_files", "pdftxt_title"),
     "HTML to Markdown": ("cat_files", "html2md_title"),
+    "HTML viewer": ("cat_files", "htmlview_title"),
     "Text diff": ("cat_files", "diff_title"),
     "Resume builder": ("cat_files", "cv_title"),
     "Cover letter": ("cat_files", "cl_title"),
@@ -87,11 +89,12 @@ st.set_page_config(page_title="My Tools Hub", page_icon="🛠️", layout="wide"
 # 🎨 Embedded styles
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root { --primary:#4f46e5; --accent:#6366f1; --ink:#0f172a; --muted:#64748b; --line:#e9edf4; --bg:#f6f7fb; }
 
-html, body, [class*="css"], .stApp { font-family:'Inter','Segoe UI',sans-serif; color:var(--ink); }
+html, body, [class*="css"], .stApp {
+  font-family:Aptos,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  color:var(--ink);
+}
 .stApp { background:var(--bg); }
 
 /* Hide Streamlit chrome for an app-like shell */
