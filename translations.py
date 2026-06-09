@@ -1840,6 +1840,85 @@ for _lang, _extra in _NET.items():
     translations.setdefault(_lang, {}).update(_extra)
 
 
+# --- HTML viewer and Power Automate JSON checker ---
+_VIEWER_CHECKER = {
+    "English": {
+        "htmlview_title": "HTML Viewer", "htmlview_intro": "Paste or upload HTML and preview it in an isolated frame.",
+        "htmlview_upload": "Upload HTML (optional)", "htmlview_source": "HTML source",
+        "htmlview_viewport": "Viewport", "htmlview_height": "Height", "htmlview_external": "External assets",
+        "htmlview_external_warning": "External images, styles, and fonts may contact third-party servers.",
+        "htmlview_safe": "Safe preview: scripts, forms, frames, and external requests are blocked.",
+        "htmlview_empty": "Paste or upload HTML to preview it.", "htmlview_preview": "Preview",
+        "htmlview_download": "Download HTML",
+        "paj_title": "Power Automate JSON Checker",
+        "paj_intro": "Checks JSON syntax, flow structure, runAfter references, and common expression errors.",
+        "paj_input": "Paste a Power Automate flow definition or JSON:", "paj_check": "Check JSON",
+        "paj_empty": "Paste JSON to check it.", "paj_errors": "Errors", "paj_warnings": "Warnings",
+        "paj_invalid": "The JSON contains blocking errors.", "paj_valid_warnings": "Valid with warnings.",
+        "paj_valid": "Valid Power Automate JSON.", "paj_line": "line", "paj_column": "column",
+        "paj_source": "Error location", "paj_formatted": "Formatted JSON", "paj_download": "Download JSON",
+    },
+    "Polski": {
+        "htmlview_title": "Podgląd HTML", "htmlview_intro": "Wklej lub prześlij HTML i zobacz go w izolowanej ramce.",
+        "htmlview_upload": "Prześlij HTML (opcjonalnie)", "htmlview_source": "Kod HTML",
+        "htmlview_viewport": "Widok", "htmlview_height": "Wysokość", "htmlview_external": "Zasoby zewnętrzne",
+        "htmlview_external_warning": "Zewnętrzne obrazy, style i czcionki mogą łączyć się z serwerami firm trzecich.",
+        "htmlview_safe": "Bezpieczny podgląd: skrypty, formularze, ramki i żądania zewnętrzne są zablokowane.",
+        "htmlview_empty": "Wklej lub prześlij HTML.", "htmlview_preview": "Podgląd", "htmlview_download": "Pobierz HTML",
+        "paj_title": "Kontrola JSON Power Automate", "paj_intro": "Sprawdza składnię, strukturę przepływu, odwołania runAfter i typowe błędy wyrażeń.",
+        "paj_input": "Wklej definicję przepływu Power Automate lub JSON:", "paj_check": "Sprawdź JSON",
+        "paj_empty": "Wklej JSON do sprawdzenia.", "paj_errors": "Błędy", "paj_warnings": "Ostrzeżenia",
+        "paj_invalid": "JSON zawiera błędy blokujące.", "paj_valid_warnings": "Poprawny z ostrzeżeniami.",
+        "paj_valid": "Poprawny JSON Power Automate.", "paj_line": "wiersz", "paj_column": "kolumna",
+        "paj_source": "Miejsce błędu", "paj_formatted": "Sformatowany JSON", "paj_download": "Pobierz JSON",
+    },
+    "Deutsch": {
+        "htmlview_title": "HTML-Vorschau", "htmlview_intro": "HTML einfügen oder hochladen und isoliert anzeigen.",
+        "htmlview_upload": "HTML hochladen (optional)", "htmlview_source": "HTML-Quelltext",
+        "htmlview_viewport": "Ansicht", "htmlview_height": "Höhe", "htmlview_external": "Externe Ressourcen",
+        "htmlview_external_warning": "Externe Bilder, Stile und Schriften können Drittserver kontaktieren.",
+        "htmlview_safe": "Sichere Vorschau: Skripte, Formulare, Frames und externe Anfragen sind blockiert.",
+        "htmlview_empty": "HTML einfügen oder hochladen.", "htmlview_preview": "Vorschau", "htmlview_download": "HTML herunterladen",
+        "paj_title": "Power-Automate-JSON-Prüfer", "paj_intro": "Prüft JSON-Syntax, Flow-Struktur, runAfter-Verweise und häufige Ausdrucksfehler.",
+        "paj_input": "Power-Automate-Flowdefinition oder JSON einfügen:", "paj_check": "JSON prüfen",
+        "paj_empty": "JSON zum Prüfen einfügen.", "paj_errors": "Fehler", "paj_warnings": "Warnungen",
+        "paj_invalid": "Das JSON enthält blockierende Fehler.", "paj_valid_warnings": "Gültig mit Warnungen.",
+        "paj_valid": "Gültiges Power-Automate-JSON.", "paj_line": "Zeile", "paj_column": "Spalte",
+        "paj_source": "Fehlerstelle", "paj_formatted": "Formatiertes JSON", "paj_download": "JSON herunterladen",
+    },
+    "Українська": {
+        "htmlview_title": "Перегляд HTML", "htmlview_intro": "Вставте або завантажте HTML для перегляду в ізольованому фреймі.",
+        "htmlview_upload": "Завантажити HTML (необов’язково)", "htmlview_source": "Код HTML",
+        "htmlview_viewport": "Розмір екрана", "htmlview_height": "Висота", "htmlview_external": "Зовнішні ресурси",
+        "htmlview_external_warning": "Зовнішні зображення, стилі та шрифти можуть звертатися до сторонніх серверів.",
+        "htmlview_safe": "Безпечний перегляд: скрипти, форми, фрейми та зовнішні запити заблоковано.",
+        "htmlview_empty": "Вставте або завантажте HTML.", "htmlview_preview": "Перегляд", "htmlview_download": "Завантажити HTML",
+        "paj_title": "Перевірка JSON Power Automate", "paj_intro": "Перевіряє синтаксис, структуру потоку, посилання runAfter і типові помилки виразів.",
+        "paj_input": "Вставте визначення потоку Power Automate або JSON:", "paj_check": "Перевірити JSON",
+        "paj_empty": "Вставте JSON для перевірки.", "paj_errors": "Помилки", "paj_warnings": "Попередження",
+        "paj_invalid": "JSON містить критичні помилки.", "paj_valid_warnings": "Коректний із попередженнями.",
+        "paj_valid": "Коректний JSON Power Automate.", "paj_line": "рядок", "paj_column": "стовпець",
+        "paj_source": "Місце помилки", "paj_formatted": "Форматований JSON", "paj_download": "Завантажити JSON",
+    },
+    "中文": {
+        "htmlview_title": "HTML 查看器", "htmlview_intro": "粘贴或上传 HTML，并在隔离框架中预览。",
+        "htmlview_upload": "上传 HTML（可选）", "htmlview_source": "HTML 源代码",
+        "htmlview_viewport": "视口", "htmlview_height": "高度", "htmlview_external": "外部资源",
+        "htmlview_external_warning": "外部图片、样式和字体可能会连接第三方服务器。",
+        "htmlview_safe": "安全预览：脚本、表单、框架和外部请求已被阻止。",
+        "htmlview_empty": "请粘贴或上传 HTML。", "htmlview_preview": "预览", "htmlview_download": "下载 HTML",
+        "paj_title": "Power Automate JSON 检查器", "paj_intro": "检查 JSON 语法、流程结构、runAfter 引用和常见表达式错误。",
+        "paj_input": "粘贴 Power Automate 流程定义或 JSON：", "paj_check": "检查 JSON",
+        "paj_empty": "请粘贴要检查的 JSON。", "paj_errors": "错误", "paj_warnings": "警告",
+        "paj_invalid": "JSON 包含阻止运行的错误。", "paj_valid_warnings": "有效，但有警告。",
+        "paj_valid": "有效的 Power Automate JSON。", "paj_line": "行", "paj_column": "列",
+        "paj_source": "错误位置", "paj_formatted": "格式化 JSON", "paj_download": "下载 JSON",
+    },
+}
+for _lang, _extra in _VIEWER_CHECKER.items():
+    translations.setdefault(_lang, {}).update(_extra)
+
+
 # --- Imprint + GDPR privacy-policy sections ---
 _LEGAL = {
     "English": {
